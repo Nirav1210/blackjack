@@ -25,6 +25,5 @@ npm run lint
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### References
-CSS background: https://codepen.io/mohaiman/pen/MQqMyo
-CSS Buttons: https://fdossena.com/?p=html5cool/buttons/i.frag
+* https://codepen.io/mohaiman/pen/MQqMyo
 

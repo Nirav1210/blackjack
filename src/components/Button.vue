@@ -1,7 +1,5 @@
 <template>
-  <div class="button-container">
-    <div class="button bouncy">{{ buttonName }}</div>
-  </div>
+  <div class="default-button">{{ buttonName }}</div>
 </template>
 
 <script>
@@ -14,55 +12,27 @@ export default {
 </script>
 
 <style scoped>
-.button {
+.default-button {
+  position: relative;
   display: inline-block;
   padding: 0.35em 1.2em;
   border: 0.1em solid #ffffff;
-  margin: 0 0.3em 0.3em 0;
   border-radius: 0.12em;
-  box-sizing: border-box;
-  text-decoration: none;
-  font-family: "Roboto", sans-serif;
-  font-weight: 300;
   color: #ffffff;
   text-align: center;
   transition: all 0.2s;
+  z-index: 1;
 }
-.button:hover {
-  color:#000000;
+.default-button:hover {
+  color: #000000;
   background-color: #ffffff;
-}
-@media all and (max-width: 30em) {
-  .button {
-    display: block;
-    margin: 0.4em auto;
-  }
-}
-.bouncy {
-  animation: bouncy 5s infinite linear;
+  cursor: pointer;
   position: relative;
 }
-@keyframes bouncy {
-  0% {
-    top: 0em;
-  }
-  40% {
-    top: 0em;
-  }
-  43% {
-    top: -0.9em;
-  }
-  46% {
-    top: 0em;
-  }
-  48% {
-    top: -0.4em;
-  }
-  50% {
-    top: 0em;
-  }
-  100% {
-    top: 0em;
+@media all and (max-width: 30em) {
+  .default-button {
+    display: block;
+    margin: 0.4em auto;
   }
 }
 </style>

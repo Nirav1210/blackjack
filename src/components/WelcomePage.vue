@@ -1,17 +1,26 @@
 <template>
   <div class="welcome">
     <div class="context">
-      <div class="image-blackjack">
-        <img
-          alt="blackjack logo"
-          src="../assets/blackjack-logo.png"
-          width="200px"
-        />
+      <div :class="getIntroClasses">
+        <div class="image-blackjack">
+          <img
+            alt="blackjack logo"
+            src="../assets/blackjack-logo.png"
+            width="200px"
+          />
+        </div>
+        <Button
+          v-if="!showGame"
+          button-name="Click to Play!"
+          @click.native="displayGame()"
+        ></Button>
       </div>
-      <Button button-name="Click to Play!"></Button>
+      <div :class="getGameClasses">
+        <GamePage />
+      </div>
     </div>
     <!-- Area is created to have an animaed background -->
-    <div class="area" >
+    <div class="area">
       <ul class="circles">
         <li></li>
         <li></li>
@@ -24,19 +33,46 @@
         <li></li>
         <li></li>
       </ul>
-    </div >
+    </div>
   </div>
 </template>
 
 <script>
 import Button from "./Button.vue";
+import GamePage from "./GamePage.vue";
+
 export default {
   name: "WelcomePage",
   components: {
-    Button
+    Button,
+    GamePage
   },
   props: {
     msg: String
+  },
+  data: () => {
+    return {
+      showGame: false
+    };
+  },
+  computed: {
+    getIntroClasses() {
+      if (this.showGame) {
+        return "intro shrinked-intro";
+      }
+      return "intro";
+    },
+    getGameClasses() {
+      if (this.showGame) {
+        return "game expanded-game";
+      }
+      return "game";
+    }
+  },
+  methods: {
+    displayGame() {
+      this.showGame = true;
+    }
   }
 };
 </script>
@@ -53,13 +89,32 @@ export default {
   width: 100%;
   position: absolute;
   top: 30vh;
+  display: flex;
+}
+
+.game {
+  transition: width 2s ease;
+  width: 0%;
+}
+
+.expanded-game {
+  width: 75%;
+}
+
+.intro {
+  width: 100%;
+  transition: width 2s ease;
+}
+
+.shrinked-intro {
+  width: 20%;
 }
 
 .area {
-  background: #4e54c8;  
-  background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);  
+  background: #4e54c8;
+  background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);
   width: 100%;
-  height: 100vh;
+  height: 98vh;
 }
 
 .circles {
