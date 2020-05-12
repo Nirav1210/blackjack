@@ -1,23 +1,22 @@
 <template>
   <div class="welcome">
     <div class="context">
-      <div :class="getIntroClasses">
-        <div class="image-blackjack">
+      <transition name="fade" mode="out-in">
+        <div v-if="showGame" class="game" key="game">
+          <GamePage />
+        </div>
+        <div v-else class="intro" key="intro">
           <img
             alt="blackjack logo"
             src="../assets/blackjack-logo.png"
             width="200px"
           />
+          <Button
+            button-name="Click to Play!"
+            @click.native="displayGame()"
+          ></Button>
         </div>
-        <Button
-          v-if="!showGame"
-          button-name="Click to Play!"
-          @click.native="displayGame()"
-        ></Button>
-      </div>
-      <div :class="getGameClasses">
-        <GamePage />
-      </div>
+      </transition>
     </div>
     <!-- Area is created to have an animaed background -->
     <div class="area">
@@ -55,20 +54,6 @@ export default {
       showGame: false
     };
   },
-  computed: {
-    getIntroClasses() {
-      if (this.showGame) {
-        return "intro shrinked-intro";
-      }
-      return "intro";
-    },
-    getGameClasses() {
-      if (this.showGame) {
-        return "game expanded-game";
-      }
-      return "game";
-    }
-  },
   methods: {
     displayGame() {
       this.showGame = true;
@@ -87,27 +72,41 @@ export default {
 
 .context {
   width: 100%;
+  height: 100%;
   position: absolute;
-  top: 30vh;
   display: flex;
+  align-items: center;
 }
 
 .game {
-  transition: width 2s ease;
-  width: 0%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.expanded-game {
-  width: 75%;
+.fade-enter-active {
+  transition: opacity 0.8s;
+}
+
+.fade-leave-active {
+  transition: opacity 0.8s;
+}
+
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-leave-to {
+  opacity: 0;
 }
 
 .intro {
   width: 100%;
-  transition: width 2s ease;
-}
-
-.shrinked-intro {
-  width: 20%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
 
 .area {
