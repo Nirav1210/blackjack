@@ -1,14 +1,21 @@
 <template>
   <div class="game-panel">
-    <div class="dealer-view">Dealer View</div>
-    <div class="player-view">Player View</div>
+    <div class="dealer-view">
+      <Card card-type="green_back" />
+    </div>
+    <div class="player-view">
+      <Card card-type="green_back" />
+    </div>
   </div>
 </template>
 
 <script>
+import Card from "./Card.vue";
 export default {
   name: "GamePage",
-  components: {},
+  components: {
+    Card
+  },
   props: {
     msg: String
   }
@@ -24,11 +31,13 @@ export default {
 .dealer-view {
   height: 50%;
   display: flex;
-  background-color: pink;
+  justify-content: center;
+  align-items: center;
 }
 .player-view {
   height: 50%;
   display: flex;
-  background-color: yellow;
+  justify-content: center;
+  align-items: center;
 }
 </style>
