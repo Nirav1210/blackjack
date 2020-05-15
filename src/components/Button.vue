@@ -13,21 +13,26 @@ export default {
 
 <style scoped>
 .default-button {
+  height: 2em;
   position: relative;
-  display: inline-block;
-  padding: 0.35em 1.2em;
-  border: 0.1em solid #ffffff;
-  border-radius: 0.12em;
-  color: #ffffff;
+  display: flex;
+  font-size: 0.8em;
+  font-weight: bold;
+  padding: 0.5em 1em;
+  border: 0.1em solid #fdbcb4;
+  border-radius: 0.5em;
+  color: #008080;
+  background-color: #fdbcb4;
+  justify-content: center;
+  align-items: center;
   text-align: center;
-  transition: all 0.2s;
   z-index: 1;
 }
 .default-button:hover {
-  color: #000000;
-  background-color: #ffffff;
+  color: #008080;
+  background-color: #f5f5f5;
+  border: 0.1em solid #f5f5f5;
   cursor: pointer;
-  position: relative;
 }
 @media all and (max-width: 30em) {
   .default-button {

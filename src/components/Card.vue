@@ -23,9 +23,12 @@ export default {
 
 <style scoped>
 img {
-  width: 20%;
+  max-width: 100%;
+  max-height: 100%;
 }
 .playing-card {
+  width: 10%;
+  height: 70%;
   display: flex;
   justify-content: center;
   align-items: center;
