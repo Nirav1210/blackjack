@@ -5,12 +5,6 @@
 // THE DEAL - dealer(face up), player(face up), dealer(face down), player(face up)
 
 // THE PLAY - The player must decide whether to "stand" (not ask for another card) or "hit" (ask for another card)
-// SOFT HAND - the combination of an ace with a card other than a ten-card (if count is not 21 with an ace)
-// because the player can count the ace as a 1 or 11, and either draw cards or not.
-// For example with a "soft 17" (an ace and a 6), the total is 7 or 17.
-// While a count of 17 is a good hand, the player may wish to draw for a higher total.
-// If the draw creates a BUST hand by counting the ace as an 11,
-// the player simply counts the ace as a 1 and continues playing by standing or "hitting"
 
 // THE DEALER'S PLAY - the dealers face-down card is turned up
 // If the total is 17 or more, it must stand.
@@ -19,14 +13,6 @@
 
 // BUST - if a total is ove than 21
 
-const FACE_VALUES = {
-  a: 1,
-  J: 10,
-  Q: 10,
-  K: 10,
-  A: 11
-};
-
 const RESULTS = {
   BUST: 1,
   WIN: 2,
@@ -34,13 +20,16 @@ const RESULTS = {
   PUSH: 4,
   BLACKJACK: 5
 };
+
+const FACE_VALUES = { a: 1, J: 10, Q: 10, K: 10, A: 11 };
+
 // eslint-disable-next-line prettier/prettier
 const CARD_VALUES = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
 const SUITES = ["C", "D", "H", "S"];
 
 const shuffleCards = deckToShuffle => {
-  // we don't want to modify the actual deck so we'll create a clone
-  const clone = deckToShuffle.slice();
+  // we'll create a clone to avoid modifying the actual deck
+  let clone = deckToShuffle.slice();
   for (let i = clone.length - 1; i > 0; i--) {
     const rand = Math.floor(Math.random() * (i + 1));
     [clone[i], clone[rand]] = [clone[rand], clone[i]];
@@ -48,6 +37,10 @@ const shuffleCards = deckToShuffle => {
   return clone;
 };
 
+/**
+ * create a deck of cards using (value, suit) pair
+ * @returns a list of cards in [{value: "2", suit: "C"}] format
+ */
 const createDeck = () => {
   let deck = [];
   CARD_VALUES.forEach(value => {
@@ -58,10 +51,14 @@ const createDeck = () => {
   return deck;
 };
 
-const createShoe = (nbDecks = 1) => {
+/**
+ * create a shoe of shuffled cards
+ * @param {*} nbDecks number of decks
+ */
+export function createShoe(nbDecks = 1) {
   let shoe = [];
   for (let i = 0; i < nbDecks; i++) {
-    shoe = shoe.concat(createDeck);
+    shoe = shoe.concat(createDeck());
   }
   return shuffleCards(shoe);
 };
@@ -70,10 +67,53 @@ const getCardValue = card => {
   return FACE_VALUES[card.value] ? FACE_VALUES[card.value] : card.value;
 };
 
-// const toggleAceValue = card => {
-//   return card.value == "A" ? "a" : "A";
-// };
+const sumOfCards = (acc, card) => acc + getCardValue(card);
 
-// const isSoftHand = card => {
+/**
+ * the combination of an ace with a card other than a ten-card is known as a "soft hand"
+ * @param {*} hand players' cards
+ * @returns true if is a soft hand false otherwise
+ */
+const isSoftHand = hand => {
+  const doesHandContainAce = hand.some(card => card.value === "A");
+  const doesHandContainAnotherTenCard = getScore(true, hand) === 21;
+  return doesHandContainAce && doesHandContainAnotherTenCard ? true : false;
+};
 
-// };
+/**
+ * change value of all aces to 1
+ * @param {*} hand players' cards
+ * @returns an array of cards
+ */
+const allAcesToOne = hand => {
+  let clone = hand.slice();
+  return clone.map(card => {
+    card.value = card.value === "A" ? "a" : card.value;
+  });
+};
+
+/**
+ * change value of first ace in the hand to 11
+ * @param {*} hand players' cards
+ * @returns an array of cards
+ */
+const firstAceToEleven = hand => {
+  let clone = hand.slice();
+  let firstAce = clone.find(card => card.value === "a");
+  firstAce.value = "A";
+  return clone;
+};
+
+/**
+ * get total score of players' cards
+ * @param {*} isAceBigger should value of the Ace be 11
+ * @param {*} hand players' cards
+ * @returns score value
+ */
+const getScore = (isAceBigger = false, hand) => {
+  let lowCards = allAcesToOne(hand);
+  let minimum = lowCards.reduce(sumOfCards, 0);
+  let highCards = firstAceToEleven(lowCards);
+  let maximum = highCards.reduce(sumOfCards, 0);
+  return maximum <= 21 || isAceBigger ? maximum : minimum;
+};
