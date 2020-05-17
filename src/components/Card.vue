@@ -1,9 +1,8 @@
 <template>
   <div class="playing-card">
-    <img
-      v-bind:alt="cardType"
-      v-bind:src="require('../assets/' + getImagePath + '.png')"
-    />
+    <section class="cards">
+      <section :class="getCardClasses" :value="cardValue"></section>
+    </section>
   </div>
 </template>
 
@@ -11,26 +10,28 @@
 export default {
   name: "Card",
   props: {
-    cardType: String
+    cardValue: String,
+    cardSuit: String
   },
   computed: {
-    getImagePath() {
-      return this.cardType;
+    getCardClasses() {
+      switch (this.cardSuit) {
+        case "spade":
+          return "card card--spade";
+        case "heart":
+          return "card card--heart";
+        case "diamond":
+          return "card card--diamond";
+        case "club":
+          return "card card--club";
+        default:
+          return "card";
+      }
     }
   }
 };
 </script>
 
-<style scoped>
-img {
-  max-width: 100%;
-  max-height: 100%;
-}
-.playing-card {
-  width: 10%;
-  height: 70%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+<style scoped rel="stylesheet/less" lang="less">
+@import "../style.less";
 </style>

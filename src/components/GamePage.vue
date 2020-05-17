@@ -4,14 +4,16 @@
       <Card
         v-for="card in dealerCards"
         :key="card.value + card.suit"
-        :card-type="`${card.value + card.suit}`"
+        :card-value="card.value"
+        :card-suit="card.suit"
       />
     </div>
     <div class="player-view">
       <Card
         v-for="card in playerCards"
         :key="card.value + card.suit"
-        :card-type="`${card.value + card.suit}`"
+        :card-value="card.value"
+        :card-suit="card.suit"
       />
     </div>
     <div class="button-panel-view">
@@ -92,12 +94,14 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
 }
 .player-view {
   height: 45%;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: row;
 }
 .button-panel-view {
   height: 20%;

@@ -25,7 +25,7 @@ const FACE_VALUES = { a: 1, J: 10, Q: 10, K: 10, A: 11 };
 
 // eslint-disable-next-line prettier/prettier
 const CARD_VALUES = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-const SUITES = ["C", "D", "H", "S"];
+const SUITES = ["spade", "heart", "diamond", "club"];
 
 const shuffleCards = deckToShuffle => {
   // we'll create a clone to avoid modifying the actual deck
