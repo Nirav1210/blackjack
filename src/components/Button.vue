@@ -19,19 +19,19 @@ export default {
   font-size: 0.8em;
   font-weight: bold;
   padding: 0.5em 1em;
-  border: 0.1em solid #fdbcb4;
+  border: 0.1em solid #0677a1;
   border-radius: 0.5em;
-  color: #008080;
-  background-color: #fdbcb4;
+  color: #eae7dc;
+  background-color: #0677a1;
   justify-content: center;
   align-items: center;
   text-align: center;
   z-index: 1;
 }
 .default-button:hover {
-  color: #008080;
-  background-color: #f5f5f5;
-  border: 0.1em solid #f5f5f5;
+  color: #eae7dc;
+  background-color: #1f2833;
+  border: 0.1em solid #1f2833;
   cursor: pointer;
 }
 @media all and (max-width: 30em) {

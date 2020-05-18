@@ -13,11 +13,11 @@
 
 // BUST - if a total is ove than 21
 
-const RESULTS = {
+export const RESULTS = {
   BUST: 1,
   WIN: 2,
   LOSE: 3,
-  PUSH: 4,
+  STANDOFF: 4,
   BLACKJACK: 5
 };
 
@@ -61,11 +61,26 @@ export function createShoe(nbDecks = 1) {
     shoe = shoe.concat(createDeck());
   }
   return shuffleCards(shoe);
-};
+}
 
-const getCardValue = card => {
-  return FACE_VALUES[card.value] ? FACE_VALUES[card.value] : card.value;
-};
+export function getCardValue(card) {
+  let value = FACE_VALUES[card.value] ? FACE_VALUES[card.value] : card.value;
+  return parseInt(value);
+}
+
+const doesHandContainAce = hand => hand.some(card => card.value === "A");
+
+export function getHandTotal(hand) {
+  if (doesHandContainAce(hand)) {
+    if (isSoftHand(hand)) {
+      return "21";
+    }
+    let max = getScore(true, hand);
+    let min = getScore(false, hand);
+    return max > 21 ? min.toString() : max.toString();
+  }
+  return hand.reduce(sumOfCards, 0).toString();
+}
 
 const sumOfCards = (acc, card) => acc + getCardValue(card);
 
@@ -75,9 +90,8 @@ const sumOfCards = (acc, card) => acc + getCardValue(card);
  * @returns true if is a soft hand false otherwise
  */
 const isSoftHand = hand => {
-  const doesHandContainAce = hand.some(card => card.value === "A");
-  const doesHandContainAnotherTenCard = getScore(true, hand) === 21;
-  return doesHandContainAce && doesHandContainAnotherTenCard ? true : false;
+  const doesHandContainTenCard = getScore(true, hand) === 21;
+  return doesHandContainAce(hand) && doesHandContainTenCard ? true : false;
 };
 
 /**
@@ -85,11 +99,10 @@ const isSoftHand = hand => {
  * @param {*} hand players' cards
  * @returns an array of cards
  */
-const allAcesToOne = hand => {
-  let clone = hand.slice();
-  return clone.map(card => {
-    card.value = card.value === "A" ? "a" : card.value;
-  });
+const allAcesToOne = card => {
+  let clone = { ...card };
+  if (clone.value === "A") clone.value = "a";
+  return clone;
 };
 
 /**
@@ -110,10 +123,10 @@ const firstAceToEleven = hand => {
  * @param {*} hand players' cards
  * @returns score value
  */
-const getScore = (isAceBigger = false, hand) => {
-  let lowCards = allAcesToOne(hand);
+export function getScore(isAceBigger = false, hand) {
+  let lowCards = hand.map(allAcesToOne);
   let minimum = lowCards.reduce(sumOfCards, 0);
   let highCards = firstAceToEleven(lowCards);
   let maximum = highCards.reduce(sumOfCards, 0);
   return maximum <= 21 || isAceBigger ? maximum : minimum;
-};
+}

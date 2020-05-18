@@ -5,7 +5,7 @@
         <div v-if="showGame" class="game" key="game">
           <GamePage />
         </div>
-        <div v-else class="intro" key="intro">
+        <!-- <div v-else class="intro" key="intro">
           <img
             alt="blackjack logo"
             src="../assets/blackjack-logo.png"
@@ -15,7 +15,7 @@
             button-name="Click to Play!"
             @click.native="displayGame()"
           ></Button>
-        </div>
+        </div> -->
       </transition>
     </div>
     <!-- Area is created to have an animaed background -->
@@ -51,7 +51,7 @@ export default {
   },
   data: () => {
     return {
-      showGame: false
+      showGame: true
     };
   },
   methods: {
@@ -74,8 +74,8 @@ export default {
   width: 100%;
   height: 100%;
   position: absolute;
-  display: flex;
-  align-items: center;
+  /* display: flex;
+  align-items: center; */
 }
 
 .game {
@@ -110,10 +110,14 @@ export default {
 }
 
 .area {
-  background: #008080;
+  /* dark coral */
+  /* background: #e85a4f; */
+  /* dark pink */
+  /* background: #d83f87; */
+  background: #78244c;
   background: -webkit-linear-gradient(to left, #fdbcb4, #fabaac);
   width: 100%;
-  height: 98vh;
+  height: 100vh;
 }
 
 .circles {
