@@ -1,16 +1,24 @@
 <template>
   <div class="button-panel">
-    <div class="buttons">
-      <Button button-name="Double Down"></Button>
+    <div v-if="!isResultOut">
+      <div class="buttons">
+        <Button button-name="Stand" @click.native="$emit('stand')"></Button>
+      </div>
+      <div class="buttons">
+        <Button button-name="Hit!" @click.native="$emit('hit')"></Button>
+      </div>
+      <div class="buttons">
+        <Button button-name="Double Down"></Button>
+      </div>
+      <div class="buttons">
+        <Button button-name="Split Pairs"></Button>
+      </div>
+      <div class="buttons">
+        <Button button-name="Surrender"></Button>
+      </div>
     </div>
-    <div class="buttons">
-      <Button button-name="Split"></Button>
-    </div>
-    <div class="buttons">
-      <Button button-name="Stand"></Button>
-    </div>
-    <div class="buttons">
-      <Button button-name="Hit!"></Button>
+    <div v-if="isResultOut" class="buttons">
+      <Button button-name="Reset" @click.native="$emit('newGame')"></Button>
     </div>
   </div>
 </template>
@@ -23,18 +31,25 @@ export default {
     Button
   },
   props: {
-    userName: String
+    isResultOut: Boolean
   }
 };
 </script>
 
 <style scoped>
 .button-panel {
+  margin: 0.5em;
   display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+  margin-bottom: -50%;
+  transform: translate(0%, -50%);
 }
+
 .buttons {
-  margin: 0 10px;
-  width: 25%;
-  height: 100%;
+  margin: 10px;
 }
 </style>

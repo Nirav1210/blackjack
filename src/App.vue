@@ -19,6 +19,17 @@ export default {
 body {
   overflow: hidden;
   margin: 0;
+  font-size: 1rem;
+}
+@media only screen and (max-width: 840px) {
+  body {
+    font-size: 0.8rem;
+  }
+}
+@media only screen and (max-width: 668px) {
+  body {
+    font-size: 0.6rem;
+  }
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

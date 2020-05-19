@@ -1,7 +1,7 @@
 <template>
   <div class="playing-card">
     <section class="cards">
-      <section :class="getCardClasses" :value="cardValue"></section>
+      <section :class="getCardClasses" :value="getCardValue"></section>
     </section>
   </div>
 </template>
@@ -11,19 +11,23 @@ export default {
   name: "Card",
   props: {
     cardValue: String,
-    cardSuit: String
+    cardSuit: String,
+    isFaceDown: Boolean
   },
   computed: {
+    getCardValue() {
+      return this.isFaceDown ? null : this.cardValue;
+    },
     getCardClasses() {
       switch (this.cardSuit) {
         case "spade":
-          return "card card--spade";
+          return this.isFaceDown ? "card card--down" : "card card--spade";
         case "heart":
-          return "card card--heart";
+          return this.isFaceDown ? "card card--down" : "card card--heart";
         case "diamond":
-          return "card card--diamond";
+          return this.isFaceDown ? "card card--down" : "card card--diamond";
         case "club":
-          return "card card--club";
+          return this.isFaceDown ? "card card--down" : "card card--club";
         default:
           return "card";
       }

@@ -1,17 +1,23 @@
 <template>
   <div>
-    <div class="chip flat">
-      <p>{{ score }}</p>
+    <div :class="getChipClasses">
+      <p>{{ value }} x {{ quantity }}</p>
     </div>
-    <!-- <img alt="chip icon" src="../assets/casino-chip.png" /> -->
   </div>
 </template>
 
 <script>
 export default {
-  name: "ScoreCard",
+  name: "Chip",
   props: {
-    score: Number
+    value: Number,
+    quantity: Number,
+    color: String
+  },
+  computed: {
+    getChipClasses() {
+      return "chip " + this.color;
+    }
   }
 };
 </script>
@@ -19,7 +25,8 @@ export default {
 <style scoped>
 .chip {
   margin: 0.5em;
-  /* font-size: 1.2em; */
+  z-index: 1;
+  font-size: 1em;
   position: relative;
   /* display: inline-block; */
   -webkit-box-sizing: border-box;
@@ -27,12 +34,16 @@ export default {
   box-sizing: border-box;
   width: 5em;
   height: 5em;
-  background: #1f2833;
+  background: #af1124;
   border-radius: 50%;
   /* position: relative; */
   border: 0.5em dashed #eae7dc;
   transition: all 0.5s ease;
   /* backface-visibility: hidden; */
+  box-shadow: 0 0 0 0.2em #fff;
+}
+.chip:hover {
+  font-size: 1.1em;
 }
 div.chip p {
   margin: 0;
@@ -45,7 +56,16 @@ div.chip p {
   transform: translate(-50%, -50%);
 }
 
-.chip.flat {
-  box-shadow: 0 0 0 0.2em #fff;
+.chip.black {
+  background: #1f2833;
+}
+.chip.blue {
+  background: #045391;
+}
+.chip.green {
+  background: #4b9e00;
+}
+.chip.orange {
+  background: #df6301;
 }
 </style>
