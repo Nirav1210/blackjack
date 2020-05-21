@@ -13,12 +13,12 @@
 
 // BUST - if a total is ove than 21
 
-export const RESULTS = {
-  BUST: 1,
+export const RESULT_SCORE = {
+  BUST: 0,
   WIN: 2,
-  LOSE: 3,
-  STANDOFF: 4,
-  BLACKJACK: 5
+  LOSE: 0,
+  STANDOFF: 1,
+  BLACKJACK: 3
 };
 
 const FACE_VALUES = { a: 1, J: 10, Q: 10, K: 10, A: 11 };
