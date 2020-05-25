@@ -37,8 +37,11 @@ export default {
     Chip
   },
   props: {
-    result: Number,
-    bet: Number
+    gameScore: Number
+  },
+  date: {
+    currentBet: null,
+    totalBank: null
   },
   methods: {
     betMoney(value) {

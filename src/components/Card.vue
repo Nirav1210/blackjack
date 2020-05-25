@@ -1,7 +1,8 @@
 <template>
   <div class="playing-card">
     <section class="cards">
-      <section :class="getCardClasses" :value="getCardValue"></section>
+      <section v-if="isFaceDown" class="card card--down"></section>
+      <section v-else :class="getCardClasses" :value="cardValue"></section>
     </section>
   </div>
 </template>
@@ -21,15 +22,15 @@ export default {
     getCardClasses() {
       switch (this.cardSuit) {
         case "spade":
-          return this.isFaceDown ? "card card--down" : "card card--spade";
+          return "card card--spade";
         case "heart":
-          return this.isFaceDown ? "card card--down" : "card card--heart";
+          return "card card--heart";
         case "diamond":
-          return this.isFaceDown ? "card card--down" : "card card--diamond";
+          return "card card--diamond";
         case "club":
-          return this.isFaceDown ? "card card--down" : "card card--club";
+          return "card card--club";
         default:
-          return "card";
+          return "card card--down";
       }
     }
   }

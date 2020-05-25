@@ -2,10 +2,10 @@
   <div class="button-panel">
     <div v-if="!isResultOut">
       <div class="buttons">
-        <Button button-name="Stand" @click.native="$emit('stand')"></Button>
+        <Button button-name="Stand" @click.native="onStand()"></Button>
       </div>
       <div class="buttons">
-        <Button button-name="Hit!" @click.native="$emit('hit')"></Button>
+        <Button button-name="Hit!" @click.native="onHit()"></Button>
       </div>
       <div class="buttons">
         <Button button-name="Double Down"></Button>
@@ -32,6 +32,14 @@ export default {
   },
   props: {
     isResultOut: Boolean
+  },
+  methods: {
+    onHit() {
+      this.$store.dispatch("hit");
+    },
+    onStand() {
+      this.$store.dispatch("stand");
+    }
   }
 };
 </script>

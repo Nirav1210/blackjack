@@ -21,6 +21,14 @@ export const RESULT_SCORE = {
   BLACKJACK: 3
 };
 
+export const RESULT_TYPES = {
+  BUST: "bust",
+  WIN: "win",
+  LOSE: "lost",
+  STANDOFF: "standoff",
+  BLACKJACK: "blackjack"
+};
+
 const FACE_VALUES = { a: 1, J: 10, Q: 10, K: 10, A: 11 };
 
 // eslint-disable-next-line prettier/prettier
@@ -79,7 +87,7 @@ export function getHandTotal(hand) {
     let min = getScore(false, hand);
     return max > 21 ? min.toString() : max.toString();
   }
-  return hand.reduce(sumOfCards, 0).toString();
+  return hand.reduce(sumOfCards, 0);
 }
 
 const sumOfCards = (acc, card) => acc + getCardValue(card);

@@ -2,41 +2,46 @@
   <div class="game-panel">
     <div class="dealer-view">
       <Card
-        v-for="card in dealerCards"
+        v-for="(card, index) in dealerHand.cards"
         :key="card.value + card.suit"
         :card-value="card.value"
         :card-suit="card.suit"
-        :is-face-down="dealerCards.length == 1"
+        :is-face-down="index == 0 && !dealersTurn"
       />
-      <div class="score-total">
-        <ScoreBubble :score="dealerTotal"></ScoreBubble>
+      <div v-if="dealersTurn" class="score-total">
+        <ScoreBubble :score="dealerHandTotal"></ScoreBubble>
       </div>
+      <ScoreCard
+        v-if="isRoundOver"
+        :result="dealerHand.result"
+        class="result-button"
+      >
+      </ScoreCard>
     </div>
-    <!-- <ScoreCard></ScoreCard> -->
-    <div v-if="isResultOut" class="result-button">
-      <p>{{ result }}</p>
-    </div>
-    <!--  -->
     <div class="player-view">
       <Card
-        v-for="card in playerCards"
+        v-for="card in playerHand.cards"
         :key="card.value + card.suit"
         :card-value="card.value"
         :card-suit="card.suit"
       />
       <div class="score-total">
-        <ScoreBubble :score="playerTotal"></ScoreBubble>
+        <ScoreBubble :score="playerHandTotal"></ScoreBubble>
       </div>
+      <ScoreCard
+        v-if="isRoundOver"
+        :result="playerHand.result"
+        class="result-button"
+      >
+      </ScoreCard>
     </div>
-    <ButtonPanel
-      :is-result-out="isResultOut"
-      @stand="onStand"
-      @hit="onHit"
-      @newGame="resetGame"
-    />
+    <ButtonPanel :is-result-out="isRoundOver" />
     <div class="score-panel">
-      <Bank :result="result" />
+      <Bank :game-score="bank" />
     </div>
+
+    <!-- sample todo -->
+    <!-- <p>{{ getTodosById(1) }}</p> -->
   </div>
 </template>
 
@@ -45,7 +50,10 @@ import Card from "./Card.vue";
 import ButtonPanel from "./ButtonPanel.vue";
 import Bank from "./Bank.vue";
 import ScoreBubble from "./Score.vue";
-import { createShoe, getHandTotal, RESULT_SCORE } from "../blackjack.js";
+import ScoreCard from "./ScoreCard.vue";
+import { RESULT_SCORE } from "../blackjack.js";
+
+import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "GamePage",
@@ -53,7 +61,8 @@ export default {
     Card,
     Bank,
     ScoreBubble,
-    ButtonPanel
+    ButtonPanel,
+    ScoreCard
   },
   props: {
     msg: String,
@@ -64,85 +73,32 @@ export default {
   },
   data: () => {
     return {
-      score: 100,
-      shoe: [],
-      playerCards: [],
-      dealerCards: [],
       result: null
     };
   },
   created() {
-    this.resetGame();
+    this.$store.dispatch("initGame");
   },
   computed: {
-    playerTotal() {
-      return getHandTotal(this.playerCards);
+    ...mapGetters(["getPlayerTotal", "getDealerTotal"]),
+    ...mapState([
+      "dealerHand",
+      "playerHand",
+      "roundOver",
+      "bank",
+      "isDealersTurn"
+    ]),
+    isRoundOver() {
+      return this.roundOver;
     },
-    dealerTotal() {
-      return getHandTotal(this.dealerCards);
+    dealersTurn() {
+      return this.isDealersTurn;
     },
-    isResultOut() {
-      return this.result !== null;
-    }
-  },
-  methods: {
-    resetGame() {
-      this.shoe = [];
-      this.playerCards = [];
-      this.dealerCards = [];
-      this.result = null;
-      this.shoe = createShoe();
-      this.playerCards.push(this.shoe.shift());
-      this.playerCards.push(this.shoe.shift());
-      this.dealerCards.push(this.shoe.shift());
-      this.dealerCards.push(this.shoe.shift());
+    dealerHandTotal() {
+      return this.getDealerTotal.toString();
     },
-    onHit() {
-      this.playerCards.push(this.shoe.shift());
-      if (parseInt(this.playerTotal) > 21) {
-        this.result = "Dealer won!";
-      }
-    },
-    onStand() {
-      this.dealersPlay();
-    },
-    dealersPlay() {
-      this.dealerCards.push(this.shoe.shift());
-      if (this.dealerTotal >= 17) {
-        this.result = this.calculateResult();
-      } else {
-        this.dealersPlay();
-      }
-    },
-    calculateResult() {
-      let player = parseInt(this.playerTotal);
-      let dealer = parseInt(this.dealerTotal);
-      if (player == dealer) {
-        return "Stand off!";
-      }
-      if (dealer > 21) {
-        return "Player won!";
-      }
-      if (player <= 21) {
-        if (player > dealer) {
-          if (player == 21) {
-            if (this.playerCards.length == 2) {
-              return "Black Jack! - Player";
-            }
-          }
-          return "Player won!";
-        }
-      }
-      if (dealer <= 21) {
-        if (dealer > player) {
-          if (dealer == 21) {
-            if (this.dealerCards.length == 2) {
-              return "Black Jack! - Dealer";
-            }
-          }
-          return "Dealer won!";
-        }
-      }
+    playerHandTotal() {
+      return this.getPlayerTotal.toString();
     }
   }
 };
@@ -156,20 +112,25 @@ export default {
   flex-direction: column;
 }
 .dealer-view {
-  height: 45%;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center;
+  align-items: center; */
   flex-direction: row;
   position: relative;
+  width: max-content;
+  margin: auto;
+  padding: 1em;
 }
 .player-view {
-  height: 50%;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center;
+  align-items: center; */
   flex-direction: row;
+  width: max-content;
   position: relative;
+  margin: auto;
+  padding: 1em;
+  /* flex: 1 0 auto; */
 }
 .score-panel {
   display: flex;
@@ -183,17 +144,18 @@ export default {
 }
 .score-total {
   position: absolute;
-  bottom: 0;
+  top: 0;
+  right: 0;
 }
 .result-button {
-  background: #e4c580;
-  border-radius: 1%;
-  padding: 2%;
+  /* background: #e4c580; */
+  /* border-radius: 1%; */
   position: absolute;
-  top: 50%;
-  left: 50%;
   z-index: 1;
-  margin-right: -50%;
+  left: 50%;
+  top: 50%;
+  z-index: 1;
+  margin-bottom: -50%;
   transform: translate(-50%, -50%);
 }
 </style>
