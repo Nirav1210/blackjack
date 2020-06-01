@@ -81,18 +81,19 @@ export default {
   },
   computed: {
     ...mapGetters(["getPlayerTotal", "getDealerTotal"]),
-    ...mapState([
-      "dealerHand",
-      "playerHand",
-      "roundOver",
-      "bank",
-      "isDealersTurn"
-    ]),
+    ...mapState(["hands", "roundOver", "bank"]),
     isRoundOver() {
       return this.roundOver;
     },
     dealersTurn() {
-      return this.isDealersTurn;
+      const allPlayersStanding = this.hands.every(hand => hand.isStanding);
+      return allPlayersStanding ? true : false;
+    },
+    dealerHand() {
+      return this.hands[0];
+    },
+    playerHand() {
+      return this.hands[1];
     },
     dealerHandTotal() {
       return this.getDealerTotal.toString();

@@ -1,6 +1,6 @@
 <template>
   <div class="button-panel">
-    <div v-if="!isResultOut">
+    <div>
       <div class="buttons">
         <Button button-name="Stand" @click.native="onStand()"></Button>
       </div>
@@ -17,9 +17,9 @@
         <Button button-name="Surrender"></Button>
       </div>
     </div>
-    <div v-if="isResultOut" class="buttons">
+    <!-- <div v-if="isResultOut" class="buttons">
       <Button button-name="Reset" @click.native="$emit('newGame')"></Button>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -35,10 +35,10 @@ export default {
   },
   methods: {
     onHit() {
-      this.$store.dispatch("hit");
+      this.$store.dispatch("hit", 1);
     },
     onStand() {
-      this.$store.dispatch("stand");
+      this.$store.dispatch("stand", 1);
     }
   }
 };

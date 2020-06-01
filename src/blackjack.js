@@ -14,17 +14,17 @@
 // BUST - if a total is ove than 21
 
 export const RESULT_SCORE = {
-  BUST: 0,
-  WIN: 2,
-  LOSE: 0,
-  STANDOFF: 1,
-  BLACKJACK: 3
+  bust: 0,
+  win: 2,
+  lose: 0,
+  standoff: 1,
+  blackjack: 3
 };
 
 export const RESULT_TYPES = {
   BUST: "bust",
   WIN: "win",
-  LOSE: "lost",
+  LOSE: "lose",
   STANDOFF: "standoff",
   BLACKJACK: "blackjack"
 };
@@ -137,4 +137,50 @@ export function getScore(isAceBigger = false, hand) {
   let highCards = firstAceToEleven(lowCards);
   let maximum = highCards.reduce(sumOfCards, 0);
   return maximum <= 21 || isAceBigger ? maximum : minimum;
+}
+
+export function checkResult(hand1, hand2) {
+  let dealer = getHandTotal(hand1);
+  let player = getHandTotal(hand2);
+  if (player > 21) {
+    return { result: RESULT_TYPES.BUST, score: RESULT_SCORE.bust };
+  }
+  if (dealer == player) {
+    return { result: RESULT_TYPES.STANDOFF, score: RESULT_SCORE.standoff };
+  }
+  if (dealer > 21) {
+    // return { result: RESULT_TYPES.BUST, score: RESULT_SCORE.bust };
+    return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
+  }
+  if (player <= 21) {
+    if (player > dealer) {
+      if (player == 21) {
+        if (hand2.length == 2) {
+          return {
+            result: RESULT_TYPES.BLACKJACK,
+            score: RESULT_SCORE.blackjack
+          };
+        }
+      }
+      return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
+    }
+  }
+  if (dealer <= 21) {
+    if (dealer > player) {
+      if (dealer == 21) {
+        if (hand1.length == 2) {
+          // return {
+          //   result: RESULT_TYPES.BLACKJACK,
+          //   score: RESULT_SCORE.blackjack
+          // };
+          return {
+            result: RESULT_TYPES.LOSE,
+            score: RESULT_SCORE.lose
+          };
+        }
+      }
+      // return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
+      return { result: RESULT_TYPES.LOSE, score: RESULT_SCORE.lose };
+    }
+  }
 }

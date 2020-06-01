@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import {
   createShoe,
   getHandTotal,
+  checkResult,
   RESULT_TYPES,
   RESULT_SCORE
 } from "../blackjack";
@@ -12,8 +13,10 @@ Vue.use(Vuex);
 const DEFAULT_DELAY = 500;
 const BASE_HAND = {
   cards: [],
-  bets: [],
-  result: null
+  bet: null,
+  result: null,
+  score: null,
+  isStanding: false
 };
 const clone = obj => JSON.parse(JSON.stringify(obj));
 
@@ -34,9 +37,10 @@ export default new Vuex.Store({
     },
     bank: 0,
     shoe: [],
-    playerHand: clone(BASE_HAND),
-    dealerHand: clone(BASE_HAND),
-    isDealersTurn: false,
+    hands: [clone(BASE_HAND), clone(BASE_HAND)],
+    // playerHand: clone(BASE_HAND),
+    // dealerHand: clone(BASE_HAND),
+    // isDealersTurn: false,
     roundOver: false
   },
   // mutations are synchronous
@@ -49,32 +53,44 @@ export default new Vuex.Store({
       state.bank = state.gameSettings.startingBank;
     },
     RESET_HANDS(state) {
-      state.playerHand = clone(BASE_HAND);
-      state.dealerHand = clone(BASE_HAND);
+      state.hands = [clone(BASE_HAND), clone(BASE_HAND)];
+      // state.playerHand = clone(BASE_HAND);
+      // state.dealerHand = clone(BASE_HAND);
     },
-    DEAL_PLAYER(state) {
-      state.playerHand.cards.push(state.shoe.shift());
+    DEAL_CARD(state, handIndex) {
+      state.hands[handIndex].cards.push(state.shoe.shift());
     },
-    DEAL_DEALER(state) {
-      state.dealerHand.cards.push(state.shoe.shift());
-    },
+    // DEAL_DEALER(state) {
+    //   state.dealerHand.cards.push(state.shoe.shift());
+    // },
     BET(state) {
       if (state.bank < state.gameSettings.minimumBet) return;
       state.bank -= state.gameSettings.minimumBet;
-      //   const bets = [state.gameSettings.minimumBet];
-      state.playerHand.bets[0] = state.gameSettings.minimumBet;
+      state.hands.forEach(hand => {
+        hand.bet = state.gameSettings.minimumBet;
+      });
     },
-    STAND(state) {
-      state.isDealersTurn = true;
+    STAND(state, handIndex) {
+      // state.isDealersTurn = true;
+      state.hands[handIndex].isStanding = true;
     },
-    SET_RESULTS(state, { dealer, player, result }) {
-      state.playerHand.result = player;
-      state.dealerHand.result = dealer;
+    SET_RESULTS(state, { result, handIndex }) {
+      state.hands[handIndex].result = result.result;
+      state.hands[handIndex].score = result.score;
+      state.bank += state.hands[handIndex].bet * result.score;
+    },
+    ROUND_OVER(state) {
       state.roundOver = true;
-      state.bank += state.playerHand.bets[0] * result;
+    },
+    RESET_ROUND(state) {
+      state.roundOver = false;
+      // state.hands.forEach(hand => {
+      //   hand.isStanding = false;
+      // });
+      // state.isDealersTurn = false;
     }
   },
-  //   we will have to dispatch action like this.$store.dispatch('fetchTodos')
+  // we will have to dispatch action like this.$store.dispatch('fetchTodos')
   // actions are asynchronous
   // actions can wrap business logic around mutations
   // context object is an object that contains all the properties on
@@ -87,9 +103,12 @@ export default new Vuex.Store({
     },
     resetRound(context) {
       context.commit("RESET_HANDS");
+      context.commit("RESET_ROUND");
       context.dispatch("reshuffle");
       context.commit("BET");
-      context.dispatch("dealRound");
+      setTimeout(() => {
+        context.dispatch("startRound");
+      }, DEFAULT_DELAY * 2);
     },
     reshuffle({ commit, state }) {
       const remainingSize = state.shoe.length;
@@ -99,118 +118,82 @@ export default new Vuex.Store({
         commit("RESET_SHOE");
       }
     },
-    dealRound({ commit, state, dispatch }) {
-      // check if there is a bet
-      if (!state.playerHand.bets[0]) return;
+    startRound({ dispatch }) {
+      dispatch("dealHand");
+    },
+    dealHand({ commit, state }) {
       for (let i = 0; i < 2; i++) {
-        commit("DEAL_PLAYER");
-        commit("DEAL_DEALER");
+        state.hands.forEach((hand, index) => {
+          if (!hand.bet) return;
+          commit("DEAL_CARD", index);
+        });
       }
-      //   setTimeout(() => {
-      //     dispatch("startRound");
-      //   }, DEFAULT_DELAY * 5);
+      // after cards are dealt the dealer should be standing in the beginning
+      commit("STAND", 0);
     },
-    hit({ commit, dispatch }) {
-      commit("DEAL_PLAYER");
-      dispatch("isPlayerBust");
-    },
-    stand({ commit, dispatch }) {
-      commit("STAND");
-      dispatch("playDealersHand");
-    },
-    isPlayerBust({ commit, getters }) {
-      if (getters.getPlayerTotal > 21) {
-        commit("SET_RESULTS", {
-          dealer: RESULT_TYPES.WIN,
-          player: RESULT_TYPES.BUST,
-          result: RESULT_SCORE.BUST
-        }); // Dealer won!, player bust
+    hit({ state, commit, dispatch }, handIndex) {
+      commit("DEAL_CARD", handIndex);
+      const hand1 = state.hands[0].cards;
+      const hand2 = state.hands[handIndex].cards;
+      // dispatch("makeDecision", { hand1, hand2, handIndex });
+      const result = checkResult(hand1, hand2);
+      if (result.result == RESULT_TYPES.BUST) {
+        commit("SET_RESULTS", { result, handIndex });
+        dispatch("endRound");
       }
     },
-    playDealersHand({ commit, getters, dispatch }) {
-      commit("DEAL_DEALER");
-      if (getters.getDealerTotal >= 17) {
-        dispatch("isStandOff");
-        dispatch("isDealerBust");
-        dispatch("isPlayerWon");
-        dispatch("isDealerWon");
+    stand({ state, commit, dispatch }, handIndex) {
+      commit("STAND", handIndex);
+      // start dealer's turn if all player are standing
+      const allPlayersStanding = state.hands.every(hand => hand.isStanding);
+      if (allPlayersStanding) {
+        dispatch("playDealerHand");
+      }
+    },
+    playDealerHand({ state, dispatch }) {
+      let clone = state.hands.slice();
+      let dealerHand = clone.shift();
+      clone.forEach((hand, index) => {
+        dispatch("makeDecision", {
+          dealerHand: dealerHand.cards,
+          playerHand: hand.cards,
+          handIndex: index + 1
+        });
+      });
+    },
+    makeDecision({ commit, dispatch }, { dealerHand, playerHand, handIndex }) {
+      let result = null;
+      if (getHandTotal(dealerHand) >= 17) {
+        result = checkResult(dealerHand, playerHand);
       } else {
-        dispatch("stand");
+        commit("DEAL_CARD", 0);
+        dispatch("stand", handIndex);
+      }
+      if (result) {
+        console.log("makeDecision", result.result, handIndex);
+        commit("SET_RESULTS", { result, handIndex });
+        dispatch("endRound");
       }
     },
-    isStandOff({ commit, state, getters }) {
-      const player = getters.getPlayerTotal;
-      const dealer = getters.getDealerTotal;
-      if (!state.roundOver && player === dealer) {
-        commit("SET_RESULTS", {
-          dealer: RESULT_TYPES.STANDOFF,
-          player: RESULT_TYPES.STANDOFF,
-          result: RESULT_SCORE.STANDOFF
-        }); // standoff
-      }
-    },
-    isDealerBust({ commit, state, getters }) {
-      if (!state.roundOver && getters.getDealerTotal > 21) {
-        commit("SET_RESULTS", {
-          dealer: RESULT_TYPES.BUST,
-          player: RESULT_TYPES.WIN,
-          result: RESULT_SCORE.WIN
-        }); // Dealer bust!, player won
-      }
-    },
-    isPlayerWon({ commit, state, getters }) {
-      const player = getters.getPlayerTotal;
-      const dealer = getters.getDealerTotal;
-      if (!state.roundOver && player <= 21) {
-        if (player > dealer) {
-          if (player == 21) {
-            if (state.playerHand.cards.length == 2) {
-              commit("SET_RESULTS", {
-                dealer: RESULT_TYPES.LOSE,
-                player: RESULT_TYPES.BLACKJACK,
-                result: RESULT_SCORE.BLACKJACK
-              }); // player blackjack
-            }
-          } else {
-            commit("SET_RESULTS", {
-              dealer: RESULT_TYPES.LOSE,
-              player: RESULT_TYPES.WIN,
-              result: RESULT_SCORE.WIN
-            }); // player win
-          }
-        }
-      }
-    },
-    isDealerWon({ commit, state, getters }) {
-      const player = getters.getPlayerTotal;
-      const dealer = getters.getDealerTotal;
-      if (!state.roundOver && dealer <= 21) {
-        if (dealer > player) {
-          if (dealer == 21) {
-            if (state.dealerHand.cards.length == 2) {
-              commit("SET_RESULTS", {
-                dealer: RESULT_TYPES.BLACKJACK,
-                player: RESULT_TYPES.LOSE,
-                result: RESULT_SCORE.LOSE
-              }); // dealer blackjack
-            }
-          } else {
-            commit("SET_RESULTS", {
-              dealer: RESULT_TYPES.WIN,
-              player: RESULT_TYPES.LOSE,
-              result: RESULT_SCORE.LOSE
-            }); // dealer won
-          }
-        }
+    endRound({ state, commit, dispatch }) {
+      let clone = state.hands.slice();
+      clone.shift();
+      // if result for all players is out then end round
+      const anyPlayersStanding = clone.some(hand => hand.result == null);
+      if (!anyPlayersStanding) {
+        commit("ROUND_OVER");
+        setTimeout(() => {
+          dispatch("resetRound");
+        }, DEFAULT_DELAY * 5);
       }
     }
   },
   getters: {
     getPlayerTotal(state) {
-      return getHandTotal(state.playerHand.cards);
+      return getHandTotal(state.hands[1].cards);
     },
     getDealerTotal(state) {
-      return getHandTotal(state.dealerHand.cards);
+      return getHandTotal(state.hands[0].cards);
     }
     // // nested getters (getter as an argument)
     // activeTodosCount: (state, getters) => {
