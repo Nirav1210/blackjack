@@ -1,43 +1,23 @@
 <template>
   <div class="game-panel">
-    <div class="dealer-view">
-      <Card
-        v-for="(card, index) in dealerHand.cards"
-        :key="card.value + card.suit"
-        :card-value="card.value"
-        :card-suit="card.suit"
-        :is-face-down="index == 0 && !dealersTurn"
+    <div class="dealer-side">
+      <GameHand
+        :hand="dealerHand"
+        :is-face-down="!dealersTurn"
+        :hand-index="0"
       />
-      <div v-if="dealersTurn" class="score-total">
-        <ScoreBubble :score="dealerHandTotal"></ScoreBubble>
-      </div>
-      <ScoreCard
-        v-if="isRoundOver"
-        :result="dealerHand.result"
-        class="result-button"
-      >
-      </ScoreCard>
     </div>
-    <div class="player-view">
-      <Card
-        v-for="card in playerHand.cards"
-        :key="card.value + card.suit"
-        :card-value="card.value"
-        :card-suit="card.suit"
+    <div class="player-side">
+      <GameHand
+        v-for="(hand, i) in playerHands"
+        :key="i"
+        :hand="hand"
+        :hand-index="i"
       />
-      <div class="score-total">
-        <ScoreBubble :score="playerHandTotal"></ScoreBubble>
-      </div>
-      <ScoreCard
-        v-if="isRoundOver"
-        :result="playerHand.result"
-        class="result-button"
-      >
-      </ScoreCard>
     </div>
-    <ButtonPanel :is-result-out="isRoundOver" />
+    <ButtonPanel />
     <div class="score-panel">
-      <Bank :game-score="bank" />
+      <!-- <Bank :game-score="bank" /> -->
     </div>
 
     <!-- sample todo -->
@@ -51,6 +31,7 @@ import ButtonPanel from "./ButtonPanel.vue";
 import Bank from "./Bank.vue";
 import ScoreBubble from "./Score.vue";
 import ScoreCard from "./ScoreCard.vue";
+import GameHand from "./GameHand.vue";
 import { RESULT_SCORE } from "../blackjack.js";
 
 import { mapState, mapGetters } from "vuex";
@@ -62,7 +43,8 @@ export default {
     Bank,
     ScoreBubble,
     ButtonPanel,
-    ScoreCard
+    ScoreCard,
+    GameHand
   },
   props: {
     msg: String,
@@ -92,8 +74,10 @@ export default {
     dealerHand() {
       return this.hands[0];
     },
-    playerHand() {
-      return this.hands[1];
+    playerHands() {
+      let clone = this.hands.slice();
+      clone.shift();
+      return clone;
     },
     dealerHandTotal() {
       return this.getDealerTotal.toString();
@@ -110,28 +94,34 @@ export default {
   height: 100%;
   margin: 0.5em;
   display: flex;
+  flex: 1;
   flex-direction: column;
 }
-.dealer-view {
+.dealer-side {
   display: flex;
-  /* justify-content: center;
-  align-items: center; */
-  flex-direction: row;
-  position: relative;
-  width: max-content;
-  margin: auto;
+  flex-flow: row nowrap;
+  margin-top: 1rem;
+  min-height: 12.4rem;
+  justify-content: center;
+  /* align-items: center; */
+  /* flex-direction: row; */
+  /* position: relative; */
+  /* width: max-content; */
+  /* margin: auto; */
   padding: 1em;
 }
-.player-view {
+.player-side {
   display: flex;
-  /* justify-content: center;
-  align-items: center; */
-  flex-direction: row;
-  width: max-content;
-  position: relative;
-  margin: auto;
+  /* justify-content: center; */
+  /* align-items: center; */
+  /* flex-direction: row; */
+  /* width: max-content; */
+  /* position: relative; */
+  /* margin: auto; */
   padding: 1em;
-  /* flex: 1 0 auto; */
+  justify-content: space-around;
+  flex: 1 0 auto;
+  flex-flow: row nowrap;
 }
 .score-panel {
   display: flex;
@@ -143,20 +133,24 @@ export default {
   margin-bottom: -50%;
   transform: translate(0%, -50%);
 }
-.score-total {
+/* .score-total {
   position: absolute;
   top: 0;
   right: 0;
-}
+} */
 .result-button {
   /* background: #e4c580; */
   /* border-radius: 1%; */
-  position: absolute;
+  /* position: absolute;
   z-index: 1;
   left: 50%;
   top: 50%;
   z-index: 1;
   margin-bottom: -50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); */
 }
+/* This only changes this particular animation duration */
+/* .animate__animated.animate__backInDown {
+  --animate-duration: 2s;
+} */
 </style>

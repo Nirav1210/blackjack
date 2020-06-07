@@ -140,21 +140,21 @@ export function getScore(isAceBigger = false, hand) {
 }
 
 export function checkResult(hand1, hand2) {
-  let dealer = getHandTotal(hand1);
-  let player = getHandTotal(hand2);
-  if (player > 21) {
+  let hand1Total = getHandTotal(hand1);
+  let hand2Total = getHandTotal(hand2);
+  if (hand2Total > 21) {
     return { result: RESULT_TYPES.BUST, score: RESULT_SCORE.bust };
   }
-  if (dealer == player) {
+  if (hand1Total == hand2Total) {
     return { result: RESULT_TYPES.STANDOFF, score: RESULT_SCORE.standoff };
   }
-  if (dealer > 21) {
+  if (hand1Total > 21) {
     // return { result: RESULT_TYPES.BUST, score: RESULT_SCORE.bust };
     return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
   }
-  if (player <= 21) {
-    if (player > dealer) {
-      if (player == 21) {
+  if (hand2Total <= 21) {
+    if (hand2Total > hand1Total) {
+      if (hand2Total == 21) {
         if (hand2.length == 2) {
           return {
             result: RESULT_TYPES.BLACKJACK,
@@ -165,9 +165,9 @@ export function checkResult(hand1, hand2) {
       return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
     }
   }
-  if (dealer <= 21) {
-    if (dealer > player) {
-      if (dealer == 21) {
+  if (hand1Total <= 21) {
+    if (hand1Total > hand2Total) {
+      if (hand1Total == 21) {
         if (hand1.length == 2) {
           // return {
           //   result: RESULT_TYPES.BLACKJACK,

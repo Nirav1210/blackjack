@@ -1,13 +1,12 @@
 <template>
   <div class="button-panel">
-    <div>
-      <div class="buttons">
-        <Button button-name="Stand" @click.native="onStand()"></Button>
-      </div>
-      <div class="buttons">
-        <Button button-name="Hit!" @click.native="onHit()"></Button>
-      </div>
-      <div class="buttons">
+    <Button button-name="STAND" @click.native="onStand()"></Button>
+    <div class="bank">
+      <Chip color="orange" :value="10"></Chip>
+      <p>x {{ numberOfChips }}</p>
+    </div>
+    <Button button-name="HIT" @click.native="onHit()"></Button>
+    <!-- <div class="buttons">
         <Button button-name="Double Down"></Button>
       </div>
       <div class="buttons">
@@ -15,23 +14,24 @@
       </div>
       <div class="buttons">
         <Button button-name="Surrender"></Button>
-      </div>
-    </div>
-    <!-- <div v-if="isResultOut" class="buttons">
-      <Button button-name="Reset" @click.native="$emit('newGame')"></Button>
-    </div> -->
+      </div> -->
   </div>
 </template>
 
 <script>
 import Button from "./Button.vue";
+import Chip from "./Chip.vue";
 export default {
   name: "ButtonPanel",
   components: {
-    Button
+    Button,
+    Chip
   },
   props: {
-    isResultOut: Boolean
+    numberOfChips: {
+      type: Number,
+      default: 20
+    }
   },
   methods: {
     onHit() {
@@ -46,18 +46,25 @@ export default {
 
 <style scoped>
 .button-panel {
-  margin: 0.5em;
+  /* margin: 0.5em;
   display: flex;
-  flex-direction: column;
-  position: absolute;
-  right: 0;
-  top: 50%;
+  position: relative;
+  bottom: 0;
   z-index: 1;
-  margin-bottom: -50%;
-  transform: translate(0%, -50%);
+  flex-flow: row nowrap; */
+  display: flex;
+  justify-content: center;
+  margin: 0.5em;
 }
-
-.buttons {
-  margin: 10px;
+.bank {
+  min-width: 10em;
+  height: 3em;
+  display: flex;
+  border-radius: 2em;
+  justify-content: center;
+  align-items: center;
+  background-color: #1f2833;
+  color: #eae7dc;
+  padding: 0.2em;
 }
 </style>

@@ -14,7 +14,6 @@ export default {
 <style scoped>
 .default-button {
   height: 2em;
-  position: relative;
   display: flex;
   font-size: 0.8em;
   font-weight: bold;
@@ -25,12 +24,13 @@ export default {
   background-color: #0677a1;
   justify-content: center;
   align-items: center;
-  text-align: center;
   z-index: 1;
+  min-width: 5em;
+  margin: 0.5em;
 }
 .default-button:hover {
-  color: #eae7dc;
-  background-color: #1f2833;
+  color: #1f2833;
+  background-color: #eae7dc;
   border: 0.1em solid #1f2833;
   cursor: pointer;
 }
