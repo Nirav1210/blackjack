@@ -14,16 +14,10 @@
 @card-color-black: #162c37;
 @card-symbol-size: 1em;
 
-// body {
-//   padding: 0;
-//   margin: 0;
-//   background: @background;
-// }
-
-.cards {
-  text-align: center;
-  max-width: 640px;
-  margin: 0 auto;
+.playing-card {
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
 }
 
 .card {
@@ -37,6 +31,7 @@
   border-radius: @card-padding;
   background: @card-background;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.18);
+  transition: all .2s ease;
 
   &:before,
   &:after {
@@ -91,7 +86,8 @@
   }
 
   &--down {
-    background: #afdb86;
+    background: #0677a1;
+    transform: rotateY(180deg);
   }
 }
 
@@ -165,14 +161,16 @@
 // }
 
 .score-circle {
-  padding: 1em;
-  border-radius: 2em;
+  padding: 0.5em;
+  border-radius: 1em;
 }
 .win {
-  background: green;
+  background: #5dbb63;
+  color: #fefefa;
 }
 .lose {
-  background: red;
+  background: #D31a38;
+  color: #fefefa;
 }
 .bust {
   background: rgb(181, 139, 3);
@@ -181,5 +179,5 @@
   background: rgb(193, 226, 26);
 }
 .standoff {
-  background: white;
+  background: #fefefa;
 }

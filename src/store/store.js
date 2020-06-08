@@ -4,8 +4,7 @@ import {
   createShoe,
   getHandTotal,
   checkResult,
-  RESULT_TYPES,
-  RESULT_SCORE
+  RESULT_TYPES
 } from "../blackjack";
 
 Vue.use(Vuex);
@@ -15,8 +14,7 @@ const BASE_HAND = {
   cards: [],
   bet: null,
   result: null,
-  score: null,
-  isStanding: false
+  score: null
 };
 const clone = obj => JSON.parse(JSON.stringify(obj));
 
@@ -31,20 +29,17 @@ export default new Vuex.Store({
   state: {
     gameSettings: {
       nbDecks: 6,
-      startingBank: 500,
+      startingBank: 20,
       shoeReshuffleAfter: 0.5,
-      minimumBet: 20
+      minimumBet: 1
     },
     bank: 0,
     shoe: [],
     hands: [clone(BASE_HAND), clone(BASE_HAND)],
-    // playerHand: clone(BASE_HAND),
-    // dealerHand: clone(BASE_HAND),
-    // isDealersTurn: false,
-    roundOver: false
+    roundOver: false,
+    activeHandIndex: null,
+    isDealing: null
   },
-  // mutations are synchronous
-  // Always put mutations within actions - to future proof an app, to incresse scalability
   mutations: {
     RESET_SHOE(state) {
       state.shoe = createShoe();
@@ -54,15 +49,10 @@ export default new Vuex.Store({
     },
     RESET_HANDS(state) {
       state.hands = [clone(BASE_HAND), clone(BASE_HAND)];
-      // state.playerHand = clone(BASE_HAND);
-      // state.dealerHand = clone(BASE_HAND);
     },
     DEAL_CARD(state, handIndex) {
       state.hands[handIndex].cards.push(state.shoe.shift());
     },
-    // DEAL_DEALER(state) {
-    //   state.dealerHand.cards.push(state.shoe.shift());
-    // },
     BET(state) {
       if (state.bank < state.gameSettings.minimumBet) return;
       state.bank -= state.gameSettings.minimumBet;
@@ -71,8 +61,11 @@ export default new Vuex.Store({
       });
     },
     STAND(state, handIndex) {
-      // state.isDealersTurn = true;
-      state.hands[handIndex].isStanding = true;
+      if (state.hands.length - 1 > handIndex) {
+        state.activeHandIndex = handIndex + 1;
+      } else {
+        state.activeHandIndex = 0;
+      }
     },
     SET_RESULTS(state, { result, handIndex }) {
       state.hands[handIndex].result = result.result;
@@ -84,17 +77,9 @@ export default new Vuex.Store({
     },
     RESET_ROUND(state) {
       state.roundOver = false;
-      // state.hands.forEach(hand => {
-      //   hand.isStanding = false;
-      // });
-      // state.isDealersTurn = false;
+      state.activeHandIndex = null;
     }
   },
-  // we will have to dispatch action like this.$store.dispatch('fetchTodos')
-  // actions are asynchronous
-  // actions can wrap business logic around mutations
-  // context object is an object that contains all the properties on
-  // the vuex store such as state, commit and getters
   actions: {
     initGame(context) {
       context.commit("RESET_BANK");
@@ -105,8 +90,9 @@ export default new Vuex.Store({
       context.commit("RESET_HANDS");
       context.commit("RESET_ROUND");
       context.dispatch("reshuffle");
-      context.commit("BET");
+      // context.commit("BET");
       setTimeout(() => {
+        context.commit("BET");
         context.dispatch("startRound");
       }, DEFAULT_DELAY * 2);
     },
@@ -122,20 +108,20 @@ export default new Vuex.Store({
       dispatch("dealHand");
     },
     dealHand({ commit, state }) {
-      for (let i = 0; i < 2; i++) {
-        state.hands.forEach((hand, index) => {
-          if (!hand.bet) return;
-          commit("DEAL_CARD", index);
-        });
-      }
-      // after cards are dealt the dealer should be standing in the beginning
+      if (!state.hands[1].bet) return;
+      const dealQueue = [1, 0, 1, 0]; // player, dealer, player, dealer
+      dealQueue.forEach((handIndex, i) => {
+        setTimeout(() => {
+          commit("DEAL_CARD", handIndex);
+        }, DEFAULT_DELAY * (i + 1));
+      });
+      // after cards are dealt the dealer should stand
       commit("STAND", 0);
     },
     hit({ state, commit, dispatch }, handIndex) {
       commit("DEAL_CARD", handIndex);
       const hand1 = state.hands[0].cards;
       const hand2 = state.hands[handIndex].cards;
-      // dispatch("makeDecision", { hand1, hand2, handIndex });
       const result = checkResult(hand1, hand2);
       if (result.result == RESULT_TYPES.BUST) {
         commit("SET_RESULTS", { result, handIndex });
@@ -144,10 +130,10 @@ export default new Vuex.Store({
     },
     stand({ state, commit, dispatch }, handIndex) {
       commit("STAND", handIndex);
-      // start dealer's turn if all player are standing
-      const allPlayersStanding = state.hands.every(hand => hand.isStanding);
-      if (allPlayersStanding) {
-        dispatch("playDealerHand");
+      if (state.activeHandIndex == 0) {
+        setTimeout(() => {
+          dispatch("playDealerHand");
+        }, DEFAULT_DELAY * 2);
       }
     },
     playDealerHand({ state, dispatch }) {
@@ -195,13 +181,5 @@ export default new Vuex.Store({
     getDealerTotal(state) {
       return getHandTotal(state.hands[0].cards);
     }
-    // // nested getters (getter as an argument)
-    // activeTodosCount: (state, getters) => {
-    //   return state.todos.length - getters.doneTodos.length;
-    // },
-    // // dynamic getter
-    // getTodosById: state => id => {
-    //   return state.todos.find(todo => todo.id === id);
-    // }
   }
 });

@@ -21,14 +21,14 @@ body {
   margin: 0;
   font-size: 1rem;
 }
-@media only screen and (max-width: 840px) {
+@media screen and (max-width: 570px), screen and (max-height: 570px) {
   body {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
   }
 }
-@media only screen and (max-width: 668px) {
+@media screen and (max-width: 400px), screen and (max-height: 400px) {
   body {
-    font-size: 0.6rem;
+    font-size: 0.5rem;
   }
 }
 #app {

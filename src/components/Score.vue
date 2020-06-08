@@ -1,5 +1,5 @@
 <template>
-  <div class="score-bubble">{{ score }}</div>
+  <div v-if="score > 0" class="score-bubble">{{ score }}</div>
 </template>
 
 <script>

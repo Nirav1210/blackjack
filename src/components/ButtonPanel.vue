@@ -1,11 +1,19 @@
 <template>
   <div class="button-panel">
-    <Button button-name="STAND" @click.native="onStand()"></Button>
+    <Button
+      :is-enabled="!dealersTurn"
+      button-name="STAND"
+      @click.native="onStand()"
+    ></Button>
     <div class="bank">
-      <Chip color="orange" :value="10"></Chip>
-      <p>x {{ numberOfChips }}</p>
+      <Chip color="orange"></Chip>
+      <p>x {{ bank }}</p>
     </div>
-    <Button button-name="HIT" @click.native="onHit()"></Button>
+    <Button
+      :is-enabled="!dealersTurn"
+      button-name="HIT"
+      @click.native="onHit()"
+    ></Button>
     <!-- <div class="buttons">
         <Button button-name="Double Down"></Button>
       </div>
@@ -21,6 +29,7 @@
 <script>
 import Button from "./Button.vue";
 import Chip from "./Chip.vue";
+import { mapState, mapGetters } from "vuex";
 export default {
   name: "ButtonPanel",
   components: {
@@ -33,12 +42,23 @@ export default {
       default: 20
     }
   },
+  data: () => {
+    return {
+      dealersTurn: false
+    };
+  },
+  computed: {
+    ...mapState(["isDealing", "bank", "activeHandIndex"])
+  },
   methods: {
     onHit() {
       this.$store.dispatch("hit", 1);
     },
     onStand() {
       this.$store.dispatch("stand", 1);
+    },
+    isPlayerTurn() {
+      // return !this.isDealing && this.activeHandIndex > 0;
     }
   }
 };
@@ -46,15 +66,12 @@ export default {
 
 <style scoped>
 .button-panel {
-  /* margin: 0.5em;
-  display: flex;
-  position: relative;
-  bottom: 0;
-  z-index: 1;
-  flex-flow: row nowrap; */
+  position: absolute;
   display: flex;
   justify-content: center;
-  margin: 0.5em;
+  bottom: 1%;
+  left: 50%;
+  right: 50%;
 }
 .bank {
   min-width: 10em;

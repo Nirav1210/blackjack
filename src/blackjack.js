@@ -161,6 +161,7 @@ export function checkResult(hand1, hand2) {
             score: RESULT_SCORE.blackjack
           };
         }
+        return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
       }
       return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
     }
@@ -182,5 +183,6 @@ export function checkResult(hand1, hand2) {
       // return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
       return { result: RESULT_TYPES.LOSE, score: RESULT_SCORE.lose };
     }
+    return { result: RESULT_TYPES.LOSE, score: RESULT_SCORE.lose };
   }
 }

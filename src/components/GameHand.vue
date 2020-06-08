@@ -1,9 +1,9 @@
 <template>
-  <div class="game-hand">
-    <transition-group appear name="deal" tag="div">
+  <div :class="handClasses">
+    <transition-group name="deal" tag="div">
       <Card
         v-for="(card, index) in hand.cards"
-        :key="card.value + card.suit"
+        v-bind:key="card.value + card.suit"
         :card-value="card.value"
         :card-suit="card.suit"
         :is-face-down="index == 0 && isFaceDown"
@@ -12,23 +12,19 @@
     <div v-if="!isFaceDown" class="score-total">
       <ScoreBubble :score="handTotal"></ScoreBubble>
     </div>
-    <transition name="total">
-      <div class="hand-side">
-        <ScoreCard v-if="isRoundOver" :result="getResult" class="result-button">
-        </ScoreCard>
-        <Chip v-else color="orange" :value="10"></Chip>
-      </div>
-    </transition>
-    <!-- <ScoreCard :result="getResult" class="result-button">
-    </ScoreCard> -->
+    <Result
+      :is-displayed="handIndex != 0 && isRoundOver"
+      :result="getResult"
+      class="round-result"
+    >
+    </Result>
   </div>
 </template>
 
 <script>
 import Card from "./Card.vue";
-import Chip from "./Chip.vue";
 import ScoreBubble from "./Score.vue";
-import ScoreCard from "./ScoreCard.vue";
+import Result from "./Result.vue";
 import { getHandTotal } from "../blackjack";
 
 import { mapState } from "vuex";
@@ -38,8 +34,7 @@ export default {
   components: {
     Card,
     ScoreBubble,
-    ScoreCard,
-    Chip
+    Result,
   },
   props: {
     hand: {
@@ -68,7 +63,9 @@ export default {
     },
     getResult() {
       return this.hand.result;
-      // return 'win';
+    },
+    handClasses() {
+      return this.handIndex == 0 ? "game-hand is-dealer" : "game-hand";
     }
   }
 };
@@ -76,13 +73,7 @@ export default {
 
 <style scoped>
 .game-hand {
-  /* display: flex; */
-  /* justify-content: center;
-  align-items: center; */
-  /* flex-direction: row; */
   position: relative;
-  /* width: max-content; */
-  /* margin: auto; */
   padding: 1em;
   transition: transform 0.2s ease;
 }
@@ -94,18 +85,17 @@ export default {
   top: 0;
   right: 0;
 }
-.result-button {
-  /* background: #e4c580; */
-  /* border-radius: 1%; */
-  /* position: absolute; */
+.round-result {
+  position: absolute;
+  width: 50%;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
   z-index: 1;
   text-align: center;
-  font-weight: bold;
-  /* left: 50%;
-  top: 50%;
-  z-index: 1;
-  margin-bottom: -50%;
-  transform: translate(-50%, -50%); */
+  font-weight: 900;
+  font-size: larger;
+  bottom: 0.5em;
 }
 .deal-enter-active {
   animation: deal 0.3s;
@@ -114,9 +104,9 @@ export default {
   animation: deal 0.3s reverse;
   animation-duration: 0;
 }
-/* .deal-leave-active {
-  animation-duration: 0;
-} */
+.deal-move {
+  transition: transform 0.5s;
+}
 @keyframes deal {
   0% {
     transform: translateY(-100vh);
@@ -124,23 +114,5 @@ export default {
   100% {
     transform: translateY(0);
   }
-}
-.total-enter-active {
-  animation: bounce-in 0.5s;
-}
-@keyframes bounce-in {
-  0% {
-    transform: scale(0);
-  }
-  50% {
-    transform: scale(1.5);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-.hand-side {
-  display: flex;
-  justify-content: center;
 }
 </style>

@@ -3,47 +3,33 @@
     <div class="dealer-side">
       <GameHand
         :hand="dealerHand"
-        :is-face-down="!dealersTurn"
+        :is-face-down="activeHandIndex != 0"
         :hand-index="0"
       />
     </div>
     <div class="player-side">
       <GameHand
-        v-for="(hand, i) in playerHands"
+        v-for="(hand, i) in hands"
         :key="i"
         :hand="hand"
+        v-if="i > 0"
         :hand-index="i"
       />
     </div>
     <ButtonPanel />
-    <div class="score-panel">
-      <!-- <Bank :game-score="bank" /> -->
-    </div>
-
-    <!-- sample todo -->
-    <!-- <p>{{ getTodosById(1) }}</p> -->
   </div>
 </template>
 
 <script>
-import Card from "./Card.vue";
 import ButtonPanel from "./ButtonPanel.vue";
-import Bank from "./Bank.vue";
-import ScoreBubble from "./Score.vue";
-import ScoreCard from "./ScoreCard.vue";
 import GameHand from "./GameHand.vue";
-import { RESULT_SCORE } from "../blackjack.js";
 
 import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "GamePage",
   components: {
-    Card,
-    Bank,
-    ScoreBubble,
     ButtonPanel,
-    ScoreCard,
     GameHand
   },
   props: {
@@ -63,13 +49,9 @@ export default {
   },
   computed: {
     ...mapGetters(["getPlayerTotal", "getDealerTotal"]),
-    ...mapState(["hands", "roundOver", "bank"]),
+    ...mapState(["hands", "roundOver", "bank", "activeHandIndex"]),
     isRoundOver() {
       return this.roundOver;
-    },
-    dealersTurn() {
-      const allPlayersStanding = this.hands.every(hand => hand.isStanding);
-      return allPlayersStanding ? true : false;
     },
     dealerHand() {
       return this.hands[0];
@@ -77,7 +59,7 @@ export default {
     playerHands() {
       let clone = this.hands.slice();
       clone.shift();
-      return clone;
+      return this.hands;
     },
     dealerHandTotal() {
       return this.getDealerTotal.toString();
@@ -89,7 +71,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped rel="stylesheet/less" lang="less">
 .game-panel {
   height: 100%;
   margin: 0.5em;
@@ -97,60 +79,19 @@ export default {
   flex: 1;
   flex-direction: column;
 }
-.dealer-side {
+.dealer-side, .player-side {
   display: flex;
-  flex-flow: row nowrap;
-  margin-top: 1rem;
-  min-height: 12.4rem;
-  justify-content: center;
-  /* align-items: center; */
-  /* flex-direction: row; */
-  /* position: relative; */
-  /* width: max-content; */
-  /* margin: auto; */
+  min-height: 11em;
+  align-items: center;
   padding: 1em;
+}
+.dealer-side {
+  flex-flow: row nowrap;
+  justify-content: center;
 }
 .player-side {
-  display: flex;
-  /* justify-content: center; */
-  /* align-items: center; */
-  /* flex-direction: row; */
-  /* width: max-content; */
-  /* position: relative; */
-  /* margin: auto; */
-  padding: 1em;
   justify-content: space-around;
-  flex: 1 0 auto;
+  flex: 1 0;
   flex-flow: row nowrap;
 }
-.score-panel {
-  display: flex;
-  flex-direction: column;
-  position: absolute;
-  left: 0;
-  top: 50%;
-  z-index: 1;
-  margin-bottom: -50%;
-  transform: translate(0%, -50%);
-}
-/* .score-total {
-  position: absolute;
-  top: 0;
-  right: 0;
-} */
-.result-button {
-  /* background: #e4c580; */
-  /* border-radius: 1%; */
-  /* position: absolute;
-  z-index: 1;
-  left: 50%;
-  top: 50%;
-  z-index: 1;
-  margin-bottom: -50%;
-  transform: translate(-50%, -50%); */
-}
-/* This only changes this particular animation duration */
-/* .animate__animated.animate__backInDown {
-  --animate-duration: 2s;
-} */
 </style>

@@ -1,7 +1,8 @@
 <template>
   <div>
     <div :class="getChipClasses">
-      <p>{{ value }} x {{ quantity }}</p>
+      <!-- <p>{{ value }} x {{ quantity }}</p> -->
+      <p>{{ value }}</p>
     </div>
   </div>
 </template>
@@ -25,25 +26,18 @@ export default {
 <style scoped>
 .chip {
   margin: 0.5em;
-  z-index: 1;
   font-size: 1em;
   position: relative;
-  /* display: inline-block; */
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  width: 5em;
-  height: 5em;
+  width: 2em;
+  height: 2em;
   background: #af1124;
   border-radius: 50%;
-  /* position: relative; */
-  border: 0.5em dashed #eae7dc;
+  border: 0.1em dashed #eae7dc;
   transition: all 0.5s ease;
-  /* backface-visibility: hidden; */
   box-shadow: 0 0 0 0.2em #fff;
-}
-.chip:hover {
-  font-size: 1.1em;
 }
 div.chip p {
   margin: 0;
