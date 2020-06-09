@@ -18,6 +18,10 @@ const BASE_HAND = {
 };
 const clone = obj => JSON.parse(JSON.stringify(obj));
 
+// Button disable
+// bank animation
+// tests
+
 // when to thinking of vuex, first thought would be - what states do I have?
 // bank balance
 // result of every game - (so that we can show stats (scores for both, money lost, final result, % of winning based on number of rounds played))
@@ -90,7 +94,6 @@ export default new Vuex.Store({
       context.commit("RESET_HANDS");
       context.commit("RESET_ROUND");
       context.dispatch("reshuffle");
-      // context.commit("BET");
       setTimeout(() => {
         context.commit("BET");
         context.dispatch("startRound");
@@ -175,11 +178,8 @@ export default new Vuex.Store({
     }
   },
   getters: {
-    getPlayerTotal(state) {
-      return getHandTotal(state.hands[1].cards);
-    },
-    getDealerTotal(state) {
-      return getHandTotal(state.hands[0].cards);
+    getTotal: state => handIndex => {
+      return getHandTotal(state.hands[handIndex].cards).toString();
     }
   }
 });

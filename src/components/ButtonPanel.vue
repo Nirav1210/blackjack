@@ -29,7 +29,7 @@
 <script>
 import Button from "./Button.vue";
 import Chip from "./Chip.vue";
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 export default {
   name: "ButtonPanel",
   components: {
@@ -64,24 +64,24 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped rel="stylesheet/less" lang="less">
 .button-panel {
-  position: absolute;
+  bottom: 1%;
   display: flex;
   justify-content: center;
-  bottom: 1%;
   left: 50%;
+  position: absolute;
   right: 50%;
 }
 .bank {
-  min-width: 10em;
-  height: 3em;
-  display: flex;
-  border-radius: 2em;
-  justify-content: center;
   align-items: center;
   background-color: #1f2833;
+  border-radius: 2em;
   color: #eae7dc;
+  display: flex;
+  height: 3em;
+  justify-content: center;
+  min-width: 10em;
   padding: 0.2em;
 }
 </style>

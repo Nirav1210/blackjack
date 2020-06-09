@@ -21,18 +21,23 @@ export default {
 </script>
 
 <style scoped rel="stylesheet/less" lang="less">
+@color0: #0677a1;
+@color1: #eae7dc;
+@color2: #1f2833;
+
 .default-button {
   height: 2em;
   display: flex;
   font-size: 0.8em;
   font-weight: bold;
   padding: 0.5em 1em;
-  border: 0.1em solid #0677a1;
+  border: 0.1em solid @color0;
   border-radius: 0.5em;
-  color: #eae7dc;
-  background-color: #0677a1;
+  color: @color1;
+  background-color: @color0;
   justify-content: center;
   align-items: center;
+  text-align: center;
   z-index: 1;
   min-width: 5em;
   margin: 0.5em;
@@ -41,12 +46,13 @@ export default {
     pointer-events: none;
     opacity: 0.5;
   }
-}
-.default-button:hover {
-  color: #1f2833;
-  background-color: #eae7dc;
-  border: 0.1em solid #1f2833;
-  cursor: pointer;
+
+  &:hover {
+    color: @color2;
+    background-color: @color1;
+    border: 0.1em solid @color2;
+    cursor: pointer;
+  }
 }
 @media all and (max-width: 30em) {
   .default-button {

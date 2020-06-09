@@ -9,15 +9,8 @@
         :is-face-down="index == 0 && isFaceDown"
       />
     </transition-group>
-    <div v-if="!isFaceDown" class="score-total">
-      <ScoreBubble :score="handTotal"></ScoreBubble>
-    </div>
-    <Result
-      :is-displayed="handIndex != 0 && isRoundOver"
-      :result="getResult"
-      class="round-result"
-    >
-    </Result>
+    <ScoreBubble v-if="!isFaceDown" :score="getTotal(handIndex)" />
+    <Result :is-displayed="handIndex != 0 && roundOver" :result="hand.result" />
   </div>
 </template>
 
@@ -25,16 +18,15 @@
 import Card from "./Card.vue";
 import ScoreBubble from "./Score.vue";
 import Result from "./Result.vue";
-import { getHandTotal } from "../blackjack";
 
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   name: "GamePage",
   components: {
     Card,
     ScoreBubble,
-    Result,
+    Result
   },
   props: {
     hand: {
@@ -50,20 +42,9 @@ export default {
       required: true
     }
   },
-  data: () => {
-    return {};
-  },
   computed: {
+    ...mapGetters(["getTotal"]),
     ...mapState(["hands", "roundOver", "bank"]),
-    isRoundOver() {
-      return this.roundOver;
-    },
-    handTotal() {
-      return getHandTotal(this.hand.cards).toString();
-    },
-    getResult() {
-      return this.hand.result;
-    },
     handClasses() {
       return this.handIndex == 0 ? "game-hand is-dealer" : "game-hand";
     }
@@ -71,32 +52,7 @@ export default {
 };
 </script>
 
-<style scoped>
-.game-hand {
-  position: relative;
-  padding: 1em;
-  transition: transform 0.2s ease;
-}
-.game-hand.is-dealer {
-  transform: scale(0.9);
-}
-.score-total {
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-.round-result {
-  position: absolute;
-  width: 50%;
-  margin: 0 auto;
-  left: 0;
-  right: 0;
-  z-index: 1;
-  text-align: center;
-  font-weight: 900;
-  font-size: larger;
-  bottom: 0.5em;
-}
+<style scoped rel="stylesheet/less" lang="less">
 .deal-enter-active {
   animation: deal 0.3s;
 }
@@ -114,5 +70,13 @@ export default {
   100% {
     transform: translateY(0);
   }
+}
+.game-hand {
+  position: relative;
+  padding: 1em;
+  transition: transform 0.2s ease;
+}
+.game-hand.is-dealer {
+  transform: scale(0.9);
 }
 </style>

@@ -23,33 +23,32 @@ export default {
 };
 </script>
 
-<style scoped>
+<style scoped rel="stylesheet/less" lang="less">
 .chip {
-  margin: 0.5em;
-  font-size: 1em;
-  position: relative;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  width: 2em;
-  height: 2em;
   background: #af1124;
   border-radius: 50%;
   border: 0.1em dashed #eae7dc;
+  box-shadow: 0 0 0 0.2em #ffffff;
+  box-sizing: border-box;
+  font-size: 1em;
+  height: 2em;
+  margin: 0.5em;
+  position: relative;
   transition: all 0.5s ease;
-  box-shadow: 0 0 0 0.2em #fff;
+  width: 2em;
 }
-div.chip p {
-  margin: 0;
-  color: white;
-  font-size: 0.9em;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%, -50%);
+div.chip {
+  p {
+    color: white;
+    font-size: 0.9em;
+    left: 50%;
+    margin-right: -50%;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 }
-
 .chip.black {
   background: #1f2833;
 }

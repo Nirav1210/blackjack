@@ -1,8 +1,8 @@
 <template>
-  <div class="game-panel">
+  <div class="game-area">
     <div class="dealer-side">
       <GameHand
-        :hand="dealerHand"
+        :hand="this.hands[0]"
         :is-face-down="activeHandIndex != 0"
         :hand-index="0"
       />
@@ -24,20 +24,13 @@
 import ButtonPanel from "./ButtonPanel.vue";
 import GameHand from "./GameHand.vue";
 
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 
 export default {
   name: "GamePage",
   components: {
     ButtonPanel,
     GameHand
-  },
-  props: {
-    msg: String,
-    nbDecks: {
-      type: Number,
-      default: 1
-    }
   },
   data: () => {
     return {
@@ -48,50 +41,34 @@ export default {
     this.$store.dispatch("initGame");
   },
   computed: {
-    ...mapGetters(["getPlayerTotal", "getDealerTotal"]),
-    ...mapState(["hands", "roundOver", "bank", "activeHandIndex"]),
-    isRoundOver() {
-      return this.roundOver;
-    },
-    dealerHand() {
-      return this.hands[0];
-    },
-    playerHands() {
-      let clone = this.hands.slice();
-      clone.shift();
-      return this.hands;
-    },
-    dealerHandTotal() {
-      return this.getDealerTotal.toString();
-    },
-    playerHandTotal() {
-      return this.getPlayerTotal.toString();
-    }
+    ...mapState(["hands", "activeHandIndex"])
   }
 };
 </script>
 
 <style scoped rel="stylesheet/less" lang="less">
-.game-panel {
+.game-area {
+  width: 100%;
   height: 100%;
   margin: 0.5em;
   display: flex;
   flex: 1;
   flex-direction: column;
 }
-.dealer-side, .player-side {
+.dealer-side {
   display: flex;
   min-height: 11em;
   align-items: center;
   padding: 1em;
-}
-.dealer-side {
   flex-flow: row nowrap;
   justify-content: center;
 }
 .player-side {
+  display: flex;
+  min-height: 11em;
+  align-items: center;
+  padding: 1em;
   justify-content: space-around;
   flex: 1 0;
-  flex-flow: row nowrap;
 }
 </style>

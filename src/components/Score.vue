@@ -11,16 +11,21 @@ export default {
 };
 </script>
 
-<style scoped>
+<style rel="stylesheet/less" lang="less">
+@color: #0677a1;
+
 .score-bubble {
-  padding: 0.4em;
-  width: 1.5em;
-  height: 1.5em;
-  color: #eae7dc;
-  background-color: #0677a1;
-  border: 0.1em solid #0677a1;
+  background-color: @color;
   border-radius: 1em;
-  text-align: center;
+  border: 0.1em solid @color;
+  color: #eae7dc;
   font-weight: bold;
+  height: 1.5em;
+  padding: 0.4em;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  width: 1.5em;
 }
 </style>
