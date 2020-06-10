@@ -9,14 +9,14 @@
         :is-face-down="index == 0 && isFaceDown"
       />
     </transition-group>
-    <ScoreBubble v-if="!isFaceDown" :score="getTotal(handIndex)" />
+    <HandTotal v-if="!isFaceDown" :score="getTotal(handIndex)" />
     <Result :is-displayed="handIndex != 0 && roundOver" :result="hand.result" />
   </div>
 </template>
 
 <script>
 import Card from "./Card.vue";
-import ScoreBubble from "./Score.vue";
+import HandTotal from "./HandTotal.vue";
 import Result from "./Result.vue";
 
 import { mapState, mapGetters } from "vuex";
@@ -25,7 +25,7 @@ export default {
   name: "GamePage",
   components: {
     Card,
-    ScoreBubble,
+    HandTotal,
     Result
   },
   props: {

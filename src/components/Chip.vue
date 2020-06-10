@@ -1,8 +1,7 @@
 <template>
   <div>
     <div :class="getChipClasses">
-      <!-- <p>{{ value }} x {{ quantity }}</p> -->
-      <p>{{ value }}</p>
+      <p>{{ quantity }}</p>
     </div>
   </div>
 </template>
@@ -11,7 +10,6 @@
 export default {
   name: "Chip",
   props: {
-    value: Number,
     quantity: Number,
     color: String
   },

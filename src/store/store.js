@@ -18,7 +18,6 @@ const BASE_HAND = {
 };
 const clone = obj => JSON.parse(JSON.stringify(obj));
 
-// Button disable
 // bank animation
 // tests
 
@@ -42,7 +41,7 @@ export default new Vuex.Store({
     hands: [clone(BASE_HAND), clone(BASE_HAND)],
     roundOver: false,
     activeHandIndex: null,
-    isDealing: null
+    isDealing: false
   },
   mutations: {
     RESET_SHOE(state) {
@@ -71,10 +70,14 @@ export default new Vuex.Store({
         state.activeHandIndex = 0;
       }
     },
+    SET_ISDEALING(state, { isDealing }) {
+      state.isDealing = isDealing;
+    },
     SET_RESULTS(state, { result, handIndex }) {
       state.hands[handIndex].result = result.result;
       state.hands[handIndex].score = result.score;
       state.bank += state.hands[handIndex].bet * result.score;
+      state.isDealing = false;
     },
     ROUND_OVER(state) {
       state.roundOver = true;
@@ -120,6 +123,7 @@ export default new Vuex.Store({
       });
       // after cards are dealt the dealer should stand
       commit("STAND", 0);
+      commit("SET_ISDEALING", { isDealing: true });
     },
     hit({ state, commit, dispatch }, handIndex) {
       commit("DEAL_CARD", handIndex);
@@ -159,7 +163,6 @@ export default new Vuex.Store({
         dispatch("stand", handIndex);
       }
       if (result) {
-        console.log("makeDecision", result.result, handIndex);
         commit("SET_RESULTS", { result, handIndex });
         dispatch("endRound");
       }

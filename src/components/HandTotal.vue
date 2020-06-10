@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: "ScoreBubble",
+  name: "HandTotal",
   props: {
     score: String
   }

@@ -1,5 +1,5 @@
 <template>
-  <div :class="getButtonClasses">{{ buttonName }}</div>
+  <div class="default-button" :class="getButtonClasses">{{ buttonName }}</div>
 </template>
 
 <script>
@@ -14,7 +14,7 @@ export default {
   },
   computed: {
     getButtonClasses() {
-      return this.isEnabled ? "default-button" : "default-button disabled";
+      return this.isEnabled ? "" : "disabled";
     }
   }
 };
@@ -44,7 +44,7 @@ export default {
 
   &.disabled {
     pointer-events: none;
-    opacity: 0.5;
+    opacity: 0.4;
   }
 
   &:hover {
@@ -57,7 +57,6 @@ export default {
 @media all and (max-width: 30em) {
   .default-button {
     display: block;
-    margin: 0.4em auto;
   }
 }
 </style>

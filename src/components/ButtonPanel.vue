@@ -1,28 +1,16 @@
 <template>
   <div class="button-panel">
     <Button
-      :is-enabled="!dealersTurn"
+      :is-enabled="isDealing && activeHandIndex != 0"
       button-name="STAND"
       @click.native="onStand()"
-    ></Button>
-    <div class="bank">
-      <Chip color="orange"></Chip>
-      <p>x {{ bank }}</p>
-    </div>
+    />
+    <Chip class="bank" color="orange" :quantity="bank"></Chip>
     <Button
-      :is-enabled="!dealersTurn"
+      :is-enabled="isDealing && activeHandIndex != 0"
       button-name="HIT"
       @click.native="onHit()"
-    ></Button>
-    <!-- <div class="buttons">
-        <Button button-name="Double Down"></Button>
-      </div>
-      <div class="buttons">
-        <Button button-name="Split Pairs"></Button>
-      </div>
-      <div class="buttons">
-        <Button button-name="Surrender"></Button>
-      </div> -->
+    />
   </div>
 </template>
 
@@ -56,9 +44,6 @@ export default {
     },
     onStand() {
       this.$store.dispatch("stand", 1);
-    },
-    isPlayerTurn() {
-      // return !this.isDealing && this.activeHandIndex > 0;
     }
   }
 };
@@ -69,9 +54,6 @@ export default {
   bottom: 1%;
   display: flex;
   justify-content: center;
-  left: 50%;
-  position: absolute;
-  right: 50%;
 }
 .bank {
   align-items: center;
@@ -81,7 +63,7 @@ export default {
   display: flex;
   height: 3em;
   justify-content: center;
-  min-width: 10em;
+  min-width: 5em;
   padding: 0.2em;
 }
 </style>
