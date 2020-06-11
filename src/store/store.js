@@ -70,7 +70,7 @@ export default new Vuex.Store({
         state.activeHandIndex = 0;
       }
     },
-    SET_ISDEALING(state, { isDealing }) {
+    SET_IS_DEALING(state, { isDealing }) {
       state.isDealing = isDealing;
     },
     SET_RESULTS(state, { result, handIndex }) {
@@ -123,7 +123,7 @@ export default new Vuex.Store({
       });
       // after cards are dealt the dealer should stand
       commit("STAND", 0);
-      commit("SET_ISDEALING", { isDealing: true });
+      commit("SET_IS_DEALING", { isDealing: true });
     },
     hit({ state, commit, dispatch }, handIndex) {
       commit("DEAL_CARD", handIndex);
@@ -131,6 +131,7 @@ export default new Vuex.Store({
       const hand2 = state.hands[handIndex].cards;
       const result = checkResult(hand1, hand2);
       if (result.result == RESULT_TYPES.BUST) {
+        // if player is bust end round
         commit("SET_RESULTS", { result, handIndex });
         dispatch("endRound");
       }

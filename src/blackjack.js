@@ -71,13 +71,25 @@ export function createShoe(nbDecks = 1) {
   return shuffleCards(shoe);
 }
 
+/**
+ * get value of a playing card
+ * @param {*} card a playing card
+ */
 export function getCardValue(card) {
   let value = FACE_VALUES[card.value] ? FACE_VALUES[card.value] : card.value;
   return parseInt(value);
 }
 
+/**
+ * return true if the hand has an Ace card
+ * @param {*} hand list of cards in a hand
+ */
 const doesHandContainAce = hand => hand.some(card => card.value === "A");
 
+/**
+ * get score of a hand
+ * @param {*} hand list of cards in a hand
+ */
 export function getHandTotal(hand) {
   if (doesHandContainAce(hand)) {
     if (isSoftHand(hand)) {
@@ -94,7 +106,7 @@ const sumOfCards = (acc, card) => acc + getCardValue(card);
 
 /**
  * the combination of an ace with a card other than a ten-card is known as a "soft hand"
- * @param {*} hand players' cards
+ * @param {*} hand list of cards in a hand
  * @returns true if is a soft hand false otherwise
  */
 const isSoftHand = hand => {
@@ -104,7 +116,7 @@ const isSoftHand = hand => {
 
 /**
  * change value of all aces to 1
- * @param {*} hand players' cards
+ * @param {*} hand list of cards in a hand
  * @returns an array of cards
  */
 const allAcesToOne = card => {
@@ -115,7 +127,7 @@ const allAcesToOne = card => {
 
 /**
  * change value of first ace in the hand to 11
- * @param {*} hand players' cards
+ * @param {*} hand list of cards in a hand
  * @returns an array of cards
  */
 const firstAceToEleven = hand => {
@@ -126,9 +138,9 @@ const firstAceToEleven = hand => {
 };
 
 /**
- * get total score of players' cards
+ * get total score of a list of cards in a hand
  * @param {*} isAceBigger should value of the Ace be 11
- * @param {*} hand players' cards
+ * @param {*} hand list of cards in a hand
  * @returns score value
  */
 export function getScore(isAceBigger = false, hand) {
@@ -139,50 +151,47 @@ export function getScore(isAceBigger = false, hand) {
   return maximum <= 21 || isAceBigger ? maximum : minimum;
 }
 
+/**
+ * calculate and return a result for hand2
+ * In our case we use this to check result of a player's hand
+ * @param {*} hand1 list of cards in a hand1 (dealer)
+ * @param {*} hand2 list of cards in a hand2 (player)
+ */
 export function checkResult(hand1, hand2) {
   let hand1Total = getHandTotal(hand1);
   let hand2Total = getHandTotal(hand2);
-  if (hand2Total > 21) {
+  if (hand1.length == 2 && hand2Total > 21) {
     return { result: RESULT_TYPES.BUST, score: RESULT_SCORE.bust };
   }
-  if (hand1Total == hand2Total) {
+  if (hand2Total == hand1Total) {
     return { result: RESULT_TYPES.STANDOFF, score: RESULT_SCORE.standoff };
   }
-  if (hand1Total > 21) {
-    // return { result: RESULT_TYPES.BUST, score: RESULT_SCORE.bust };
+  if (hand2Total < 21 && hand1Total > 21) {
+    // dealer bust
     return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
   }
-  if (hand2Total <= 21) {
-    if (hand2Total > hand1Total) {
-      if (hand2Total == 21) {
-        if (hand2.length == 2) {
-          return {
-            result: RESULT_TYPES.BLACKJACK,
-            score: RESULT_SCORE.blackjack
-          };
-        }
-        return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
-      }
-      return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
+  if (hand2Total == 21 && hand1Total != 21) {
+    if (hand2.length == 2) {
+      return {
+        result: RESULT_TYPES.BLACKJACK,
+        score: RESULT_SCORE.blackjack
+      };
     }
+    return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
   }
-  if (hand1Total <= 21) {
-    if (hand1Total > hand2Total) {
-      if (hand1Total == 21) {
-        if (hand1.length == 2) {
-          // return {
-          //   result: RESULT_TYPES.BLACKJACK,
-          //   score: RESULT_SCORE.blackjack
-          // };
-          return {
-            result: RESULT_TYPES.LOSE,
-            score: RESULT_SCORE.lose
-          };
-        }
-      }
-      // return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
+  if (hand1Total == 21 && hand2Total != 21) {
+    if (hand1.length == 2) {
+      // dealer black jack
       return { result: RESULT_TYPES.LOSE, score: RESULT_SCORE.lose };
     }
+    // dealer won
+    return { result: RESULT_TYPES.LOSE, score: RESULT_SCORE.lose };
+  }
+  if (hand2Total > hand1Total && hand2Total < 21) {
+    return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
+  }
+  if (hand1Total > hand2Total && hand1Total < 21) {
+    // dealer won
     return { result: RESULT_TYPES.LOSE, score: RESULT_SCORE.lose };
   }
 }
