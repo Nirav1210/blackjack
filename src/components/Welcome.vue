@@ -43,7 +43,7 @@ export default {
 </script>
 
 <style scoped rel="stylesheet/less" lang="less">
-@import "../style.less";
+@import "../style/style.less";
 
 .context {
   height: 100%;

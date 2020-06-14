@@ -10,7 +10,10 @@
       />
     </transition-group>
     <HandTotal v-if="!isFaceDown" :score="getTotal(handIndex)" />
-    <Result :is-displayed="handIndex != 0 && roundOver" :result="hand.result" />
+    <Result
+      :is-displayed="handIndex != 0 && isRoundOver"
+      :result="hand.result"
+    />
   </div>
 </template>
 
@@ -44,7 +47,7 @@ export default {
   },
   computed: {
     ...mapGetters(["getTotal"]),
-    ...mapState(["hands", "roundOver", "bank"]),
+    ...mapState(["hands", "isRoundOver"]),
     handClasses() {
       return this.handIndex == 0 ? "game-hand is-dealer" : "game-hand";
     }

@@ -16,5 +16,5 @@ export default {
 </script>
 
 <style rel="stylesheet/less" lang="less">
-@import "./style.less";
+@import "./style/style.less";
 </style>
