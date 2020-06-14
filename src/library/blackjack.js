@@ -13,21 +13,13 @@
 
 // BUST - if a total is ove than 21
 
-export const RESULT_SCORE = {
-  bust: 0,
-  win: 2,
-  lose: 0,
-  standoff: 1,
-  blackjack: 3
-};
-
-export const RESULT_TYPES = {
-  BUST: "bust",
-  WIN: "win",
-  LOSE: "lose",
-  STANDOFF: "standoff",
-  BLACKJACK: "blackjack"
-};
+export const RESULTS = {
+  BUST: { result: "bust", score: 0 },
+  WIN: { result: "win", score: 2 },
+  LOSE: { result: "lose", score: 0 },
+  STANDOFF: { result: "standoff", score: 1 },
+  BLACKJACK: { result: "blackjack", score: 3 }
+}
 
 const FACE_VALUES = { a: 1, J: 10, Q: 10, K: 10, A: 11 };
 
@@ -75,7 +67,7 @@ export function createShoe(nbDecks = 1) {
  * get value of a playing card
  * @param {*} card a playing card
  */
-export function getCardValue(card) {
+function getCardValue(card) {
   let value = FACE_VALUES[card.value] ? FACE_VALUES[card.value] : card.value;
   return parseInt(value);
 }
@@ -143,7 +135,7 @@ const firstAceToEleven = hand => {
  * @param {*} hand list of cards in a hand
  * @returns score value
  */
-export function getScore(isAceBigger = false, hand) {
+function getScore(isAceBigger = false, hand) {
   let lowCards = hand.map(allAcesToOne);
   let minimum = lowCards.reduce(sumOfCards, 0);
   let highCards = firstAceToEleven(lowCards);
@@ -160,38 +152,23 @@ export function getScore(isAceBigger = false, hand) {
 export function checkResult(hand1, hand2) {
   let hand1Total = getHandTotal(hand1);
   let hand2Total = getHandTotal(hand2);
-  if (hand1.length == 2 && hand2Total > 21) {
-    return { result: RESULT_TYPES.BUST, score: RESULT_SCORE.bust };
-  }
-  if (hand2Total == hand1Total) {
-    return { result: RESULT_TYPES.STANDOFF, score: RESULT_SCORE.standoff };
-  }
-  if (hand2Total < 21 && hand1Total > 21) {
-    // dealer bust
-    return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
-  }
+  if (hand1.length == 2 && hand2Total > 21) return RESULTS.BUST;
+  if (hand1Total > hand2Total && hand1Total < 21) return RESULTS.LOSE; // hand1 won
+  if (hand2Total == hand1Total) return RESULTS.STANDOFF;
+  if (hand2Total < 21 && hand1Total > 21) return RESULTS.WIN; // hand1 bust
   if (hand2Total == 21 && hand1Total != 21) {
-    if (hand2.length == 2) {
-      return {
-        result: RESULT_TYPES.BLACKJACK,
-        score: RESULT_SCORE.blackjack
-      };
-    }
-    return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
+    return hand2.length == 2 ? RESULTS.BLACKJACK : RESULTS.WIN;
   }
   if (hand1Total == 21 && hand2Total != 21) {
-    if (hand1.length == 2) {
-      // dealer black jack
-      return { result: RESULT_TYPES.LOSE, score: RESULT_SCORE.lose };
-    }
-    // dealer won
-    return { result: RESULT_TYPES.LOSE, score: RESULT_SCORE.lose };
+    // if (hand1.length == 2) return RESULTS.LOSE;  hand1 black jack
+    return RESULTS.LOSE; // hand1 won
   }
-  if (hand2Total > hand1Total && hand2Total < 21) {
-    return { result: RESULT_TYPES.WIN, score: RESULT_SCORE.win };
-  }
-  if (hand1Total > hand2Total && hand1Total < 21) {
-    // dealer won
-    return { result: RESULT_TYPES.LOSE, score: RESULT_SCORE.lose };
-  }
+  if (hand2Total > hand1Total && hand2Total < 21) return RESULTS.WIN;
 }
+
+export default {
+  RESULTS,
+  createShoe,
+  getHandTotal,
+  checkResult
+};
