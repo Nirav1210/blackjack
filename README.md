@@ -1,7 +1,20 @@
-# blackjack
-BlackJack built with Vue.js
+# blackjack (21)
+BlackJack built with Vue and Vuex
+
+- This project is created with `Vue CLI 3` ( [link](https://cli.vuejs.org/) )
+- It uses vuex state management system
+
+![alt text](https://github.com/Nirav1210/blackjack/blob/master/public/Screen_Shot-blackjack.png "screenshot of blackjack")
 
 ## Project setup
+
+### Clone the repo and go into the directory
+```
+git clone https://github.com/Nirav1210/blackjack.git
+cd blackjack
+```
+
+### Install all the depedencies
 ```
 npm install
 ```
@@ -16,21 +29,11 @@ npm run serve
 npm run build
 ```
 
-### Lints and fixes files
+### Run unit tests
 ```
-npm run lint
+npm run test
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### References
-* background: https://codepen.io/mohaiman/pen/MQqMyo
-* chip: http://cssdeck.com/labs/pokerchips
-* cards: http://acbl.mybigcommerce.com/52-playing-cards/
-* card css: https://codepen.io/jughosta/pen/NqgZOZ
-* rules: https://bicyclecards.com/how-to-play/blackjack/
-* rules2: https://www.casinocenter.com/rules-strategy-blackjack/
-* shuffle: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-* articles: https://medium.com/poka-techblog/simplify-your-javascript-use-some-and-find-f9fb9826ddfd
+* CSS animated background: https://codepen.io/mohaiman/pen/MQqMyo
 
