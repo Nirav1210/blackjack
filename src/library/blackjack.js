@@ -19,7 +19,7 @@ export const RESULTS = {
   LOSE: { result: "lose", score: 0 },
   STANDOFF: { result: "standoff", score: 1 },
   BLACKJACK: { result: "blackjack", score: 3 }
-}
+};
 
 const FACE_VALUES = { a: 1, J: 10, Q: 10, K: 10, A: 11 };
 
