@@ -1,11 +1,14 @@
-# blackjack (21)
-BlackJack built with Vue and Vuex
-Animations are performed via Vue transitions and CSS3
+# blackjack (21) :black_joker:
 
+## Play :video_game:
+
+https://blakjack.herokuapp.com/
+
+## Introduction
+- BlackJack built with Vue and Vuex
+- Animations are performed via Vue transitions and CSS3
 - This project is created with `Vue CLI 3` ( [link](https://cli.vuejs.org/) )
 - It uses vuex state management system
-
-![alt text](https://github.com/Nirav1210/blackjack/blob/master/public/Screen_Shot-blackjack.png "screenshot of blackjack")
 
 ## Rules
 - Initial bet is always one chip
