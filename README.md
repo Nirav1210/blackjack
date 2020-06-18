@@ -47,3 +47,10 @@ npm run test
 ### References
 * CSS animated background: https://codepen.io/mohaiman/pen/MQqMyo
 
+
+## License
+
+[MIT](http://opensource.org/licenses/MIT)
+
+Copyright (c) 2020-Present, Nirav Bhut
+
